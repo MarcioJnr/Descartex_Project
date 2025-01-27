@@ -11,10 +11,12 @@ import {
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const onPress = () => ("/tabs");
 
   const handleLogin = () => {
     console.log("E-mail:", email);
     console.log("Senha:", password);
+
   };
 
   return (
@@ -41,7 +43,7 @@ export default function LoginScreen() {
           onChangeText={setPassword}
         />
 
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.loginButton} onPress={onPress}>
           <Text style={styles.loginButtonText}>Entrar</Text>
         </TouchableOpacity>
 
@@ -56,11 +58,12 @@ export default function LoginScreen() {
             Entrar com Google
           </Text>
         </TouchableOpacity>
+        
+      </View>
 
-        <TouchableOpacity>
+      <TouchableOpacity>
           <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
         </TouchableOpacity>
-      </View>
 
       {/* Criar Conta */}
       <TouchableOpacity>
@@ -73,14 +76,14 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EFE6DA",
+    backgroundColor: "#DCDEC4",
     justifyContent: "center",
     alignItems: "center",
   },
   logo: {
     fontSize: 32,
     fontWeight: "bold",
-    color: "#6A8E26",
+    color: "#497E13",
     marginBottom: 20,
   },
   form: {
@@ -114,7 +117,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   loginButtonText: {
-    color: "#6A8E26",
+    color: "#B17859",
     fontWeight: "bold",
   },
   googleButton: {
@@ -139,18 +142,18 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   forgotPassword: {
-    color: "#6A008E",
+    color: "#B17859",
     marginTop: 10,
     textDecorationLine: "underline",
   },
   createAccount: {
-    color: "#6A008E",
+    color: "#B17859",
     marginTop: 20,
     textDecorationLine: "underline",
-    backgroundColor: "#D8B0E8",
+    backgroundColor: "#EBD0B5",
     padding: 10,
     borderRadius: 10,
     textAlign: "center",
-    width: "80%",
+    width: "100%",
   },
 })
