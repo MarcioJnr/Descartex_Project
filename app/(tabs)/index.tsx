@@ -22,53 +22,57 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       {/* Logo */}
-      <Text style={styles.logo}>LOGO</Text>
+      
+        <Text style={styles.logo}>LOGO</Text>
 
-      {/* Login Form */}
-      <View style={styles.form}>
-        <Text style={styles.title}>Login</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="E-mail"
-          placeholderTextColor="#555"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Senha"
-          placeholderTextColor="#555"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
+        {/* Login Form */}
+        <View style={styles.form}>
+          <Text style={styles.title}>Login</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="E-mail"
+            placeholderTextColor="#555"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Senha"
+            placeholderTextColor="#555"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
 
-        <TouchableOpacity style={styles.loginButton} onPress={onPress}>
-          <Text style={styles.loginButtonText}>Entrar</Text>
+          <TouchableOpacity style={styles.loginButton} onPress={onPress}>
+            <Text style={styles.loginButtonText}>Entrar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.googleButton}>
+            <Text style={styles.googleButtonText}>
+              <Image
+                source={{
+                  uri: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg",
+                }}
+                style={styles.googleIcon}
+              />
+              Entrar com Google
+            </Text>
+          </TouchableOpacity>
+          
+        </View>
+
+        <TouchableOpacity>
+            <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
+          </TouchableOpacity>
+
+        <View style={styles.bottomLayout}>
+          {/* Criar Conta */}
+        <TouchableOpacity>
+          <Text style={styles.createAccount}>Criar conta</Text>
         </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity style={styles.googleButton}>
-          <Text style={styles.googleButtonText}>
-            <Image
-              source={{
-                uri: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg",
-              }}
-              style={styles.googleIcon}
-            />
-            Entrar com Google
-          </Text>
-        </TouchableOpacity>
-        
-      </View>
-
-      <TouchableOpacity>
-          <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
-        </TouchableOpacity>
-
-      {/* Criar Conta */}
-      <TouchableOpacity>
-        <Text style={styles.createAccount}>Criar conta</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -80,61 +84,79 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
+  bottomLayout: {
+    flex: 1,
+    backgroundColor: "#EBD0B5",
+    alignItems: "center",
+    width: "100%",
+    borderTopEndRadius: 50,
+    borderTopStartRadius: 50,
+    marginTop: 115,
+  },
+
   logo: {
     fontSize: 32,
     fontWeight: "bold",
     color: "#497E13",
     marginBottom: 20,
   },
+
   form: {
-    backgroundColor: "#9ACA3C",
-    width: "80%",
+    backgroundColor: "#97BC39",
+    width: "75%",
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
+    marginTop: 50
   },
+
   title: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#000",
     marginBottom: 15,
   },
+
   input: {
-    backgroundColor: "#FFF",
-    width: "100%",
-    borderRadius: 5,
-    padding: 10,
-    marginVertical: 10,
-    borderColor: "#CCC",
-    borderWidth: 1,
+    width: "75%",
+    padding: 5,
+    marginVertical: 15,
+    borderColor: "#000",
+    borderBottomWidth: 1,
   },
+
   loginButton: {
-    backgroundColor: "#EFE6DA",
+    backgroundColor: "#F1EBDD",
+    borderWidth: 1,
+    borderColor: "#94451E",
     borderRadius: 5,
-    width: "100%",
-    padding: 10,
+    width: "75%",
+    padding: 5,
     alignItems: "center",
-    marginVertical: 10,
+    marginVertical: 20,
   },
   loginButtonText: {
-    color: "#B17859",
+    color: "#94451E",
     fontWeight: "bold",
   },
   googleButton: {
-    flexDirection: "row",
+
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FFF",
+    backgroundColor: "#F1EBDD",
     borderRadius: 5,
-    width: "100%",
-    padding: 10,
-    marginVertical: 10,
+    width: "75%",
+    padding: 5,
+    marginVertical: -10,
+    marginBottom: 25,
     borderWidth: 1,
-    borderColor: "#CCC",
+    borderColor: "#94451E",
   },
   googleButtonText: {
-    color: "#555",
+    color: "#747375",
     fontWeight: "bold",
+    marginRight: 10,
+    shadowOpacity: 80,
   },
   googleIcon: {
     width: 16,
@@ -142,18 +164,18 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   forgotPassword: {
-    color: "#B17859",
+    color: "#94451E",
     marginTop: 10,
     textDecorationLine: "underline",
   },
   createAccount: {
-    color: "#B17859",
-    marginTop: 20,
-    textDecorationLine: "underline",
-    backgroundColor: "#EBD0B5",
-    padding: 10,
-    borderRadius: 10,
-    textAlign: "center",
+    color: "#94451E",
     width: "100%",
+    marginTop: 30,
+    textDecorationLine: "underline",
+    padding: 10,
+    borderRadius: 50,
+    textAlign: "center",
+    //width: "100%",
   },
 })
