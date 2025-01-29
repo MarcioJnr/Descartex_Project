@@ -12,6 +12,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { createStackNavigator } from "@react-navigation/stack";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../assets/firebaseConfig"; 
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 type RootStackParamList = {
   homepage: undefined;
@@ -42,6 +43,22 @@ export default function LoginScreen() {
       alert("Erro ao fazer login: " + (error as any).message);
     }
   };
+
+  function SignUp() {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log('Usuário criado:', userCredential.user);
+      })
+      .catch((error) => {
+        if (error.code === 'auth/email-already-in-use') {
+          console.log('Já existe uma conta com o endereço de email fornecido.');
+        }
+        if (error.code === 'auth/invalid-email') {
+          console.log('O endereço de email não é válido.');
+        }
+        console.error('Erro ao criar usuário:', error.code, error.message);
+      });
+  }
 
   return (
     <View style={styles.container}>
@@ -93,7 +110,7 @@ export default function LoginScreen() {
         <View style={styles.bottomLayout}>
           {/* Criar Conta */}
         <TouchableOpacity>
-          <Text style={styles.createAccount}>Criar conta</Text>
+          <Text style={styles.createAccount}  onPress={SignUp} >Criar conta</Text>
         </TouchableOpacity>
         </View>
 
