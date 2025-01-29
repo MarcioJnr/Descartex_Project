@@ -26,6 +26,12 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
+
+  const handlePress = () => {
+    SignIn();
+    handleLogin();
+  };
+
   const handleLogin = async () => {
     if (!email || !password) {
       alert("Por favor, preencha todos os campos.");
@@ -51,14 +57,22 @@ export default function LoginScreen() {
       })
       .catch((error) => {
         if (error.code === 'auth/email-already-in-use') {
-          console.log('Já existe uma conta com o endereço de email fornecido.');
+          alert('Já existe uma conta com o endereço de email fornecido.');
         }
         if (error.code === 'auth/invalid-email') {
-          console.log('O endereço de email não é válido.');
+          alert('O endereço de email não é válido.');
         }
         console.error('Erro ao criar usuário:', error.code, error.message);
       });
   }
+
+  function SignIn() {
+    signInWithEmailAndPassword(auth, email, password)
+    .then(() => alert("Usuario logado!"))
+    .catch(error => alert(error.message));
+    //Lembrar de informar o erro ao usuário de forma mais amigável
+  }
+
 
   return (
     <View style={styles.container}>
@@ -85,7 +99,7 @@ export default function LoginScreen() {
             onChangeText={setPassword}
           />
 
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+          <TouchableOpacity style={styles.loginButton} onPress={handlePress}>
             <Text style={styles.loginButtonText}>Entrar</Text>
           </TouchableOpacity>
 
