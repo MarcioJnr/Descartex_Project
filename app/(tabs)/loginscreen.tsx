@@ -10,6 +10,9 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { createStackNavigator } from "@react-navigation/stack";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../assets/firebaseConfig"; 
+
 type RootStackParamList = {
   homepage: undefined;
   // other routes can be added here
@@ -22,10 +25,22 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  const handleLogin = () => {
-    console.log("E-mail:", email);
-    console.log("Senha:", password);
-    navigation.navigate("homepage"); // Navega para a tela de relatório semanal
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Por favor, preencha todos os campos.");
+      return;
+    }
+  
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      console.log("Usuário logado:", user.email);
+      navigation.navigate("homepage"); // Navega para a tela principal
+    } catch (error) {
+      console.error("Erro ao fazer login:", (error as any).message);
+      alert("Erro ao fazer login: " + (error as any).message);
+    }
   };
 
   return (
