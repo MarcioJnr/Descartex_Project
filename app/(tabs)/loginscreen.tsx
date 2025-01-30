@@ -16,6 +16,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 type RootStackParamList = {
   homepage: undefined;
+  signUp: undefined;
   // other routes can be added here
 };
 
@@ -51,19 +52,7 @@ export default function LoginScreen() {
   };
 
   function SignUp() {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log('Usuário criado:', userCredential.user);
-      })
-      .catch((error) => {
-        if (error.code === 'auth/email-already-in-use') {
-          alert('Já existe uma conta com o endereço de email fornecido.');
-        }
-        if (error.code === 'auth/invalid-email') {
-          alert('O endereço de email não é válido.');
-        }
-        console.error('Erro ao criar usuário:', error.code, error.message);
-      });
+    navigation.navigate("signUp");
   }
 
   function SignIn() {
