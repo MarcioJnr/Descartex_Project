@@ -2,10 +2,16 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { Dimensions } from "react-native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../../types";
+
+type HomePageNavigationProp = StackNavigationProp<RootStackParamList, 'HomePage'>;
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function HomePage() {
+  const navigation = useNavigation<HomePageNavigationProp>();
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -47,7 +53,10 @@ export default function HomePage() {
       </View>
 
       {/* Button */}
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => navigation.navigate('CameraScreen')}
+      >
         <Text style={styles.buttonText}>Novo Registro</Text>
       </TouchableOpacity>
     </View>
