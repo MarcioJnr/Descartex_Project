@@ -13,14 +13,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../assets/firebaseConfig"; 
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { RootStackParamList } from "../../types";
 
-type RootStackParamList = {
-  homepage: undefined;
-  signUp: undefined;
-  // other routes can be added here
-};
 
-const Stack = createStackNavigator<RootStackParamList>();
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -44,7 +39,7 @@ export default function LoginScreen() {
       const user = userCredential.user;
       
       console.log("Usuário logado:", user.email);
-      navigation.navigate("homepage"); // Navega para a tela principal
+      navigation.navigate("HomePage"); // Navega para a tela principal
     } catch (error) {
       console.error("Erro ao fazer login:", (error as any).message);
       alert("Erro ao fazer login: " + (error as any).message);
@@ -52,7 +47,7 @@ export default function LoginScreen() {
   };
 
   function SignUp() {
-    navigation.navigate("signUp");
+    navigation.navigate("SignUp");
   }
 
   function SignIn() {
