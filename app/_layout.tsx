@@ -14,14 +14,14 @@ const AppLayout = () => {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }} />
-        <Stack.Screen name="CameraScreen" component={CameraScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
-      </Stack.Navigator>
-    </ThemeProvider>
+      <ThemeProvider theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme} >
+        <Stack.Navigator initialRouteName="LoginScreen" screenOptions={{ headerTintColor: '#DCDEC4'}}>
+          <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }} />
+          <Stack.Screen name="CameraScreen" component={CameraScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
+        </Stack.Navigator>
+      </ThemeProvider>
   );
 }
 

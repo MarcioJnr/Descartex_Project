@@ -6,19 +6,15 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { createStackNavigator } from "@react-navigation/stack";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../assets/firebaseConfig"; 
+import { auth, db } from "../../assets/firebaseConfig"; 
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-
-
-type RootStackParamList = {
-    homepage: undefined;
-    // other routes can be added here
-  };
+import { RootStackParamList } from "../../types";
   
   const Stack = createStackNavigator<RootStackParamList>();
 
@@ -31,21 +27,43 @@ export default function SignUpScreen() {
   const [funct, setFunct] = useState("");
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  function SignUp() {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          console.log('Usuário criado:', userCredential.user);
-        })
-        .catch((error) => {
-          if (error.code === 'auth/email-already-in-use') {
-            alert('Já existe uma conta com o endereço de email fornecido.');
+  
+        const SignUp = async () => {
+          if (!name || !CPF || !email || !phone || !funct || !password) {
+            Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+            return;
           }
-          if (error.code === 'auth/invalid-email') {
-            alert('O endereço de email não é válido.');
+
+          try {
+            // Criar usuário no Firebase Authentication
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userId = userCredential.user.uid;
+      
+            // Salvar informações no Firestore
+            await setDoc(doc(db, 'users', userId), {
+              name,
+              CPF,
+              email,
+              phone,
+              funct,
+              createdAt: serverTimestamp(),
+            });
+      
+            Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+          } catch (error:any) {
+            if (error.code === 'auth/email-already-in-use') {
+              alert('Já existe uma conta com o endereço de email fornecido.');
+            }
+            else if (error.code === 'auth/invalid-email') {
+              alert('O endereço de email não é válido.');
+            } else{
+              console.error('Erro ao cadastrar:', error);
+              Alert.alert('Erro', 'Ocorreu um erro desconhecido.'); // Adicionar alguns possíveis erros
+            }
+           
           }
-          console.error('Erro ao criar usuário:', error.code, error.message);
-        });
-    }
+        };
+
 
     return (
         <View style={styles.container}>
@@ -89,13 +107,22 @@ export default function SignUpScreen() {
                       value={funct}
                       onChangeText={setFunct}
                     />
+
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Senha"
+                      placeholderTextColor="#555"
+                      secureTextEntry
+                      value={password}
+                      onChangeText={setPassword}
+                    />
           
-                    <TouchableOpacity style={styles.SignUpButton}>
+                    <TouchableOpacity style={styles.SignUpButton} onPress={SignUp}>
                       <Text style={styles.loginButtonText}>Cadastrar</Text>
                     </TouchableOpacity>  
 
-                    <TouchableOpacity>
-                              <Text style={styles.SignInButton}>Já possui cadastro? Voltar para o login.</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+                              <Text style={styles.SignInButton} >Já possui cadastro? Voltar para o login.</Text>
                             </TouchableOpacity>
 
                   </View>

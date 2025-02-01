@@ -6,11 +6,13 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
 
+
 type HomePageNavigationProp = StackNavigationProp<RootStackParamList, 'HomePage'>;
 
 const screenWidth = Dimensions.get("window").width;
 
 export default function HomePage() {
+  
   const navigation = useNavigation<HomePageNavigationProp>();
   return (
     <View style={styles.container}>

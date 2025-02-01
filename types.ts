@@ -1,6 +1,6 @@
 // types.ts
 export type RootStackParamList = {
-    Login: undefined;
+    LoginScreen: undefined;
     HomePage: undefined;
     CameraScreen: undefined;
     SignUp: undefined;
