@@ -64,7 +64,6 @@ export default function SignUpScreen() {
                       style={styles.input}
                       placeholder="CPF"
                       placeholderTextColor="#555"
-                      secureTextEntry
                       value={CPF}
                       onChangeText={setCPF}
                     />
@@ -72,7 +71,6 @@ export default function SignUpScreen() {
                       style={styles.input}
                       placeholder="Email"
                       placeholderTextColor="#555"
-                      secureTextEntry
                       value={email}
                       onChangeText={setEmail}
                     />
@@ -80,7 +78,6 @@ export default function SignUpScreen() {
                       style={styles.input}
                       placeholder="Telefone"
                       placeholderTextColor="#555"
-                      secureTextEntry
                       value={phone}
                       onChangeText={setPhone}
                     />
@@ -88,7 +85,6 @@ export default function SignUpScreen() {
                       style={styles.input}
                       placeholder="Função Principal na Empresa"
                       placeholderTextColor="#555"
-                      secureTextEntry
                       value={funct}
                       onChangeText={setFunct}
                     />
