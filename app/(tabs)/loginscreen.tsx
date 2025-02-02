@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { createStackNavigator } from "@react-navigation/stack";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../assets/firebaseConfig"; 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { RootStackParamList } from "../../types";
 
 
@@ -30,7 +30,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      alert("Por favor, preencha todos os campos.");
+      Alert.alert("Atenção","Por favor, preencha todos os campos.");
       return;
     }
   
@@ -39,10 +39,10 @@ export default function LoginScreen() {
       const user = userCredential.user;
       
       console.log("Usuário logado:", user.email);
-      navigation.navigate("HomePage"); // Navega para a tela principal
+      navigation.replace("HomePage"); // Navega para a tela principal
     } catch (error) {
       console.error("Erro ao fazer login:", (error as any).message);
-      alert("Erro ao fazer login: " + (error as any).message);
+      Alert.alert("Erro","Erro ao fazer login: " + (error as any).message);
     }
   };
 

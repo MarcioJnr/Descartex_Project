@@ -6,19 +6,18 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { createStackNavigator } from "@react-navigation/stack";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../assets/firebaseConfig"; 
+import { auth, db } from "../../assets/firebaseConfig"; 
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 
-type RootStackParamList = {
-    homepage: undefined;
-    // other routes can be added here
-  };
+import { RootStackParamList } from "../../types";
+
   
   const Stack = createStackNavigator<RootStackParamList>();
 

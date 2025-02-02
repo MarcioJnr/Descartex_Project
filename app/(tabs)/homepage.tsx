@@ -1,64 +1,60 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { LineChart } from "react-native-chart-kit";
-import { Dimensions } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
+import { useAuth } from "../../assets/AuthContext";
 
 type HomePageNavigationProp = StackNavigationProp<RootStackParamList, 'HomePage'>;
 
-const screenWidth = Dimensions.get("window").width;
-
 export default function HomePage() {
+  const { user } = useAuth();
   const navigation = useNavigation<HomePageNavigationProp>();
+
   return (
     <View style={styles.container}>
       {/* Header */}
-      <Text style={styles.logo}>LOGO</Text>
+      <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+      <Text style={styles.title}>Descarte*</Text>
       <Text style={styles.greeting}>
-        Olá, <Text style={styles.highlight}>Maria!</Text>
+        Olá, <Text style={styles.highlight}>Márcia!</Text>
       </Text>
       <Text style={styles.info}>
-        Você fez <Text style={styles.highlight}>3 registros</Text> de resíduos esta semana!
+        Já acumulamos <Text style={styles.highlight}>100kg</Text> de resíduos esta semana.
       </Text>
 
-      {/* Weekly Chart */}
-      <View style={styles.chartContainer}>
-        <Text style={styles.chartTitle}>RELATÓRIO SEMANAL</Text>
-        <LineChart
-          data={{
-            labels: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
-            datasets: [
-              {
-                data: [10, 20, 30, 50, 40, 60, 30],
-              },
-            ],
-          }}
-          width={screenWidth * 0.9}
-          height={220}
-          chartConfig={{
-            backgroundColor: "#ffffff",
-            backgroundGradientFrom: "#f5f5f5",
-            backgroundGradientTo: "#ffffff",
-            color: (opacity = 1) => `rgba(73, 126, 19, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            strokeWidth: 2,
-          }}
-          bezier
-        />
-        <Text style={styles.totalInfo}>
-          Você já registrou <Text style={styles.highlight}>100kg</Text> de resíduos essa semana.
-        </Text>
+      {/* Evoluções Semanais */}
+      <View style={styles.evolutionsContainer}>
+        <Text style={styles.evolutionsTitle}>EVOLUÇÕES SEMANAIS</Text>
+        <View style={styles.evolutionRow}>
+          <Text style={styles.evolutionText}>Residômetro 100 kg</Text>
+        </View>
+        <View style={styles.evolutionRow}>
+          <Text style={styles.evolutionText}>Plástico    Vidro</Text>
+        </View>
+        <View style={styles.evolutionRow}>
+          <Text style={styles.evolutionText}>Metal    Papel</Text>
+        </View>
       </View>
 
-      {/* Button */}
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => navigation.navigate('CameraScreen')}
-      >
-        <Text style={styles.buttonText}>Novo Registro</Text>
-      </TouchableOpacity>
+      {/* Botões */}
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('NewRegistry')}
+        >
+          <Image source={require('../../assets/images/icon_cam.png')} style={styles.buttonIcon} />
+          <Text style={styles.buttonText}>Novo Registro</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Reports')} // Altere para a tela de relatórios
+        >
+          <Image source={require('../../assets/images/icon_report.png')} style={styles.buttonIcon} />
+          <Text style={styles.buttonText}>Relatórios</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -71,10 +67,15 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logo: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#497E13",
+    width: 250, // Ajustado para ficar proporcional
+    height: 50, // Ajustado para ficar proporcional
     marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5,
   },
   greeting: {
     fontSize: 20,
@@ -89,32 +90,48 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#555",
     marginBottom: 20,
+    textAlign: "center",
   },
-  chartContainer: {
+  evolutionsContainer: {
     backgroundColor: "#EFE6DA",
     borderRadius: 10,
     padding: 15,
     width: "100%",
-    alignItems: "center",
     marginBottom: 20,
   },
-  chartTitle: {
+  evolutionsTitle: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#333",
     marginBottom: 10,
   },
-  totalInfo: {
-    marginTop: 10,
-    fontSize: 14,
+  evolutionRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+  },
+  evolutionText: {
+    fontSize: 16,
     color: "#333",
   },
+  buttonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
   button: {
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "#B17859",
     padding: 15,
     borderRadius: 10,
-    alignItems: "center",
-    width: "60%",
+    width: "48%",
+    justifyContent: "center",
+  },
+  buttonIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
   },
   buttonText: {
     color: "#fff",
