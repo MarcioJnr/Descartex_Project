@@ -122,7 +122,7 @@ export default function SignUpScreen() {
                       <Text style={styles.loginButtonText}>Cadastrar</Text>
                     </TouchableOpacity>  
 
-                    <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                               <Text style={styles.SignInButton} >Já possui cadastro? Voltar para o login.</Text>
                             </TouchableOpacity>
 

@@ -1,17 +1,46 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
-import { useAuth } from "../../assets/AuthContext";
-
+import { fetchUserData, UserData } from "../../assets/fetchUserData";
+import { auth } from "../../assets/firebaseConfig";
 
 type HomePageNavigationProp = StackNavigationProp<RootStackParamList, 'HomePage'>;
 
 export default function HomePage() {
-
-  const { user } = useAuth();
   const navigation = useNavigation<HomePageNavigationProp>();
+  const [localUserData, setLocalUserData] = useState<UserData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const data = await fetchUserData();
+        setLocalUserData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUserData();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#497E13" />
+        <Text>Verificando autenticação...</Text>
+      </View>
+    );
+  }
+
+  if (!auth.currentUser) {
+    navigation.navigate('Login');
+    return null;
+  }
 
   return (
     <View style={styles.container}>
@@ -19,17 +48,17 @@ export default function HomePage() {
       <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
       <Text style={styles.title}>Descarte*</Text>
       <Text style={styles.greeting}>
-        Olá, <Text style={styles.highlight}>Márcia!</Text>
+        Olá, <Text style={styles.highlight}>{localUserData?.name || "Usuário"}!</Text>
       </Text>
       <Text style={styles.info}>
-        Já acumulamos <Text style={styles.highlight}>100kg</Text> de resíduos esta semana.
+        Já acumulamos <Text style={styles.highlight}>{localUserData?.totalWaste || 0}kg</Text> de resíduos esta semana.
       </Text>
 
       {/* Evoluções Semanais */}
       <View style={styles.evolutionsContainer}>
         <Text style={styles.evolutionsTitle}>EVOLUÇÕES SEMANAIS</Text>
         <View style={styles.evolutionRow}>
-          <Text style={styles.evolutionText}>Residômetro 100 kg</Text>
+          <Text style={styles.evolutionText}>Residômetro {localUserData?.totalWaste || 0} kg</Text>
         </View>
         <View style={styles.evolutionRow}>
           <Text style={styles.evolutionText}>Plástico    Vidro</Text>
@@ -51,7 +80,7 @@ export default function HomePage() {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Reports')} // Altere para a tela de relatórios
+          onPress={() => navigation.navigate('Reports')}
         >
           <Image source={require('../../assets/images/icon_report.png')} style={styles.buttonIcon} />
           <Text style={styles.buttonText}>Relatórios</Text>
@@ -68,9 +97,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "#DCDEC4",
+  },
   logo: {
-    width: 250, // Ajustado para ficar proporcional
-    height: 50, // Ajustado para ficar proporcional
+    width: 250,
+    height: 50,
     marginBottom: 20,
   },
   title: {
