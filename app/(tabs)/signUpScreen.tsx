@@ -15,6 +15,7 @@ import { auth, db } from "../../assets/firebaseConfig";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { RootStackParamList } from "../../types";
+
   
   const Stack = createStackNavigator<RootStackParamList>();
 
