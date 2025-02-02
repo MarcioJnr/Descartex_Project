@@ -16,7 +16,6 @@ import { auth } from "../../assets/firebaseConfig";
 import { RootStackParamList } from "../../types";
 
 
-
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

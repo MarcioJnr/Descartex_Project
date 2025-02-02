@@ -5,9 +5,11 @@ import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
 import { useAuth } from "../../assets/AuthContext";
 
+
 type HomePageNavigationProp = StackNavigationProp<RootStackParamList, 'HomePage'>;
 
 export default function HomePage() {
+
   const { user } = useAuth();
   const navigation = useNavigation<HomePageNavigationProp>();
 

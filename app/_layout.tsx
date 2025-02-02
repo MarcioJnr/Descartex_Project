@@ -18,6 +18,7 @@ const AppLayout = () => {
   const colorScheme = useColorScheme();
 
   return (
+
     <ThemeProvider theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       {/* Remova o NavigationContainer daqui */}
       <Stack.Navigator initialRouteName="Login">
