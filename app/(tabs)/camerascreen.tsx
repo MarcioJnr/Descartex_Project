@@ -1,18 +1,28 @@
 import React, { useState, useRef } from "react";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { Button, StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator } from "react-native";  // Importando ActivityIndicator
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from 'expo-file-system';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types"; 
+import { RouteProp } from "@react-navigation/native";
+import { Ionicons } from '@expo/vector-icons';
 
-type CameraScreenNavigationProp = StackNavigationProp<RootStackParamList, "CameraScreen">;
+type CameraScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CameraScreen'>;
+type CameraScreenRouteProp = RouteProp<RootStackParamList, 'CameraScreen'>;
 
-export default function CameraScreen() {
-  const [facing, setFacing] = useState<CameraType>("back");
+type Props = {
+  navigation: CameraScreenNavigationProp;
+  route: CameraScreenRouteProp;
+};
+
+export default function CameraScreen({ route }: Props) {
+  const wastetype = route.params?.wastetype;
+  const [facing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
-  const [photo, setPhoto] = useState<string | null>(null); // Estado para armazenar a foto
-  const cameraRef = useRef<CameraView>(null); // Referência para a câmera
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);  // Adicionando o estado de loading
+  const cameraRef = useRef<CameraView>(null);
   const navigation = useNavigation<CameraScreenNavigationProp>();
 
   if (!permission) {
@@ -28,22 +38,35 @@ export default function CameraScreen() {
     );
   }
 
-  const toggleCameraFacing = () => {
-    setFacing((current) => (current === "back" ? "front" : "back"));
+  const takePicture = async () => {
+    if (cameraRef.current) {
+      const photo = await cameraRef.current.takePictureAsync();
+      if (photo && photo.uri) {
+        const currentDate = new Date(); // Captura a data e hora atual
+        setPhoto(photo.uri);
+        setLoading(true);  // Ativa o carregamento
+
+        // Navega para a tela NewReport com a foto, texto, wasteType e a data/hora
+        const text = await performOCR(photo.uri); // Realiza o OCR na foto
+        setLoading(false);  // Desativa o carregamento após o OCR
+
+        if (text) {
+          navigation.navigate("NewReport", {
+            photo: photo.uri,
+            text,
+            wastetype,
+            date: currentDate.toISOString(), // Passa a data/hora como string
+          });
+        } else {
+          console.error("Erro: Nenhum texto detectado.");
+        }
+      } else {
+        console.error("Erro: URI da foto não encontrado.");
+      }
+    }
   };
 
-  const takePicture = async () => {
-  if (cameraRef.current) {
-    const photo = await cameraRef.current.takePictureAsync();
-    if (photo && photo.uri) {
-      setPhoto(photo.uri);
-    } else {
-      console.error("Erro: URI da foto não encontrado.");
-    }
-  }
-};
-  
-const performOCR = async (photoUri: string) => {
+  const performOCR = async (photoUri: string) => {
     try {
       const apiKey = "AIzaSyBRQC80PTrBCVW_yrN3q2q34Y1AF9TtABA";
       const apiUrl = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
@@ -88,47 +111,26 @@ const performOCR = async (photoUri: string) => {
     }
   };
   
-
-  const goToNewReport = async () => {
-    if (photo) {
-      const text = await performOCR(photo); // Realiza o OCR na foto
-      if (text) {
-        navigation.navigate("NewReport", { photo, text }); // Navega para a tela de novo relatório com a foto e o texto
-      } else {
-        console.error("Erro: Nenhum texto detectado.");
-      }
-    } else {
-      console.error("Erro: Foto não encontrada.");
-    }
-  };
-
   return (
     <View style={styles.container}>
-      {photo ? (
-        <View style={styles.previewContainer}>
-          <Image source={{ uri: photo }} style={styles.previewImage} />
-          <TouchableOpacity style={styles.button} onPress={goToNewReport}>
-            <Text style={styles.buttonText}>Usar Foto</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => setPhoto(null)}>
-            <Text style={styles.buttonText}>Tirar Outra Foto</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
         <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-              <Text style={styles.text}>Virar Câmera</Text>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <View style={styles.captureContainer}>
+            <Text style={styles.captureText}>Fotografe o resíduo</Text>
             <TouchableOpacity style={styles.captureButton} onPress={takePicture}>
-              <Text style={styles.text}>Tirar Foto</Text>
+              <Ionicons name="camera" size={32} color="white" />
             </TouchableOpacity>
           </View>
         </CameraView>
-      )}
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>Voltar</Text>
-      </TouchableOpacity>
+
+        {loading && (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#ffffff" />
+            <Text style={styles.loadingText}>Processando imagem...</Text>
+          </View>
+        )}
     </View>
   );
 }
@@ -145,57 +147,43 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
   },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: "flex-end",
+  captureContainer: {
+    position: "absolute",
+    bottom: 50,
+    alignSelf: "center",
     alignItems: "center",
+  },
+  captureText: {
+    color: "white",
+    fontSize: 18,
+    marginBottom: 20,
   },
   captureButton: {
-    alignSelf: "flex-end",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
     borderRadius: 50,
-    padding: 15,
-    marginHorizontal: 10,
+    padding: 20,
   },
-  text: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-  },
-  previewContainer: {
-    flex: 1,
+  loadingContainer: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -50 }, { translateY: -50 }],
     justifyContent: "center",
     alignItems: "center",
-  },
-  previewImage: {
-    width: 300,
-    height: 400,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    padding: 20,
     borderRadius: 10,
-    marginBottom: 20,
+  },
+  loadingText: {
+    color: "white",
+    marginTop: 10,
   },
   backButton: {
     position: "absolute",
-    bottom: 20,
-    alignSelf: "center",
-    backgroundColor: "#B17859",
-    padding: 15,
-    borderRadius: 10,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-  },
-  backButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
+    top: 40,
+    left: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    borderRadius: 50,
+    padding: 10,
   },
 });

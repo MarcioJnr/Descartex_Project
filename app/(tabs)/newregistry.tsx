@@ -20,7 +20,11 @@ export default function NewRegistry() {
     { name: "Isopor", color: "#FF2D55", image: require("../../assets/images/vector_isopor.png") }
   ];
 
-  return (
+  const handleWasteTypePress = (wastetype: string) => {
+    navigation.navigate('CameraScreen', { wastetype });
+  };
+
+   return (
     <View style={styles.container}>
       {/* Botão de voltar */}
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -36,7 +40,7 @@ export default function NewRegistry() {
           <TouchableOpacity 
             key={index} 
             style={[styles.wasteItem, { borderColor: waste.color }]} 
-            onPress={() => {/* Lógica para selecionar o resíduo */}}
+            onPress={() => handleWasteTypePress(waste.name)}
           >
             <Image source={waste.image} style={styles.wasteImage} />
             <Text style={[styles.wasteText, { color: waste.color }]}>{waste.name}</Text>
@@ -53,56 +57,49 @@ export default function NewRegistry() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#DCDEC4",
-    alignItems: "center",
     padding: 20,
+    backgroundColor: "#DCDEC4",
+  },
+  backButton: {
+    marginBottom: 20,
+  },
+  backButtonText: {
+    fontSize: 18,
+    color: "#333",
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "bold",
-    color: "#8B572A",
+    color: "#333",
     marginBottom: 20,
   },
   scrollContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    width: "100%",
+    alignItems: "center",
   },
   wasteItem: {
-    width: 120,
-    height: 120,
+    width: "100%",
+    padding: 15,
     borderWidth: 2,
     borderRadius: 10,
+    marginBottom: 10,
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    margin: 10,
-    backgroundColor: "#FFF",
   },
   wasteImage: {
-    width: 60,
-    height: 60,
-    marginBottom: 5,
+    width: 50,
+    height: 50,
+    marginRight: 15,
   },
   wasteText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
   },
   otherInput: {
-    borderBottomWidth: 1,
+    width: "100%",
+    padding: 15,
+    borderWidth: 2,
     borderColor: "#333",
-    width: "80%",
-    textAlign: "center",
-    fontSize: 16,
-    marginTop: 10,
-  },
-  backButton: {
-    alignSelf: "flex-start",
-    marginBottom: 10,
-  },
-  backButtonText: {
-    color: "#8B572A",
-    fontSize: 16,
-    fontWeight: "bold",
+    borderRadius: 10,
+    marginTop: 20,
   },
 });
