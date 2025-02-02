@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
 import { auth, db } from "../../assets/firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { WebView } from 'react-native-webview';
 
 type ReportsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reports'>;
 
@@ -12,6 +13,7 @@ export default function ReportsScreen() {
   const navigation = useNavigation<ReportsScreenNavigationProp>();
   const [residues, setResidues] = useState<{ id: string; date: string; type: string; weight: string; checked: boolean }[]>([]); // Estado para armazenar os relatórios
   const [loading, setLoading] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false); // Estado para controlar a visibilidade da Modal
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -57,6 +59,14 @@ export default function ReportsScreen() {
         residue.id === id ? { ...residue, checked: !residue.checked } : residue
       )
     );
+  };
+
+  const openForm = () => {
+    setIsModalVisible(true); // Abre a modal
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false); // Fecha a modal
   };
 
   if (loading) {
@@ -110,10 +120,21 @@ export default function ReportsScreen() {
         <TouchableOpacity style={styles.exportButton}>
           <Text style={styles.exportButtonText}>Exportar Relatórios em PDF</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.collectButton}>
+        <TouchableOpacity style={styles.collectButton} onPress={openForm}>
           <Text style={styles.collectButtonText}>Acionar Reciclo</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Modal com WebView */}
+      <Modal visible={isModalVisible} animationType="slide" onRequestClose={closeModal}>
+        <WebView
+          source={{ uri: 'https://docs.google.com/forms/d/e/1FAIpQLSemQ-b7JKx9ht1rCsC9k1eSJWVAJsYuXbaJa0KdHyMs3kZhLg/viewform?usp=send_form' }}
+          style={{ flex: 1 }}
+        />
+        <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
+          <Text style={styles.closeButtonText}>Fechar</Text>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 }
@@ -211,5 +232,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#F5F5F5",
+  },
+  closeButton: {
+    position: 'absolute',
+    bottom: 20,
+    left: '40%',
+    backgroundColor: '#497E13',
+    padding: 10,
+    borderRadius: 10,
+  },
+  closeButtonText: {
+    color: '#FFF',
+    fontSize: 16,
   },
 });
