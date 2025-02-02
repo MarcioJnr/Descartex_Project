@@ -1,28 +1,72 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
+import { auth, db } from "../../assets/firebaseConfig";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 type ReportsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reports'>;
 
 export default function ReportsScreen() {
   const navigation = useNavigation<ReportsScreenNavigationProp>();
+  const [residues, setResidues] = useState<{ id: string; date: string; type: string; weight: string; checked: boolean }[]>([]); // Estado para armazenar os relatórios
+  const [loading, setLoading] = useState(true);
 
-  // Substituir por dados do firebase
-  const [residues, setResidues] = useState([
-    { id: 1, date: "01/02/2025 - 11:35", type: "Isopor", weight: "550 g", checked: false },
-    { id: 2, date: "01/02/2025 - 11:50", type: "Papel", weight: "600 g", checked: false },
-    { id: 3, date: "01/02/2025 - 12:00", type: "Plástico", weight: "250 g", checked: false },
-  ]);
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const user = auth.currentUser;
 
-  const toggleCheck = (id: number) => {
+        if (!user) {
+          console.log("Usuário não autenticado.");
+          navigation.navigate("Login");
+          return;
+        }
+
+        const q = query(collection(db, "reports"), where("userId", "==", user.uid));
+        const querySnapshot = await getDocs(q);
+
+        const reports: { id: string; date: string; type: string; weight: string; checked: boolean }[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          reports.push({
+            id: doc.id,
+            date: data.date,
+            type: data.wasteType,
+            weight: data.weight,
+            checked: false,
+          });
+        });
+
+        setResidues(reports);
+      } catch (error) {
+        console.error("Erro ao buscar relatórios:", error);
+        Alert.alert("Erro", "Ocorreu um erro ao buscar os relatórios.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReports();
+  }, []);
+
+  const toggleCheck = (id: string) => {
     setResidues((prevResidues) =>
       prevResidues.map((residue) =>
         residue.id === id ? { ...residue, checked: !residue.checked } : residue
       )
     );
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#497E13" />
+        <Text>Carregando relatórios...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -161,5 +205,11 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontWeight: "bold",
     fontSize: 14,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F5F5F5",
   },
 });
