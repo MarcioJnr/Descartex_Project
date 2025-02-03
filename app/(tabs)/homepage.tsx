@@ -44,24 +44,29 @@ export default function HomePage() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+
+      <View style={styles.headerContainer}>
+        {/* Header */}
       <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
-      <Text style={styles.title}>Descarte*</Text>
       <Text style={styles.greeting}>
         Olá, <Text style={styles.highlight}>{localUserData?.name || "Usuário"}!</Text>
       </Text>
       <Text style={styles.info}>
         Já acumulamos <Text style={styles.highlight}>{localUserData?.totalWaste || 0}kg</Text> de resíduos esta semana.
       </Text>
+      </View>
 
-      {/* Evoluções Semanais */}
+      <View style={styles.backgroundContainer}>
+
+        {/* Evoluções Semanais */}
       <View style={styles.evolutionsContainer}>
         <Text style={styles.evolutionsTitle}>EVOLUÇÕES SEMANAIS</Text>
         <View style={styles.evolutionRow}>
           <Text style={styles.evolutionText}>Residômetro {localUserData?.totalWaste || 0} kg</Text>
         </View>
         <View style={styles.evolutionRow}>
-          <Text style={styles.evolutionText}>Plástico    Vidro</Text>
+          <Text style={styles.evolutionText}>Plástico</Text>
+          <Text style={styles.evolutionText}>Vidro</Text>
         </View>
         <View style={styles.evolutionRow}>
           <Text style={styles.evolutionText}>Metal    Papel</Text>
@@ -74,18 +79,23 @@ export default function HomePage() {
           style={styles.button}
           onPress={() => navigation.navigate('NewRegistry')}
         >
-          <Image source={require('../../assets/images/icon_cam.png')} style={styles.buttonIcon} />
           <Text style={styles.buttonText}>Novo Registro</Text>
+          <Image source={require('../../assets/images/icon_cam.png')} style={styles.buttonIcon} />
+  
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('Reports')}
         >
-          <Image source={require('../../assets/images/icon_report.png')} style={styles.buttonIcon} />
           <Text style={styles.buttonText}>Relatórios</Text>
+          <Image source={require('../../assets/images/icon_report.png')} style={styles.buttonIcon} />
         </TouchableOpacity>
       </View>
+
+      </View>
+
+      
     </View>
   );
 }
@@ -94,8 +104,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#DCDEC4",
-    alignItems: "center",
+  },
+  headerContainer:{
     padding: 20,
+
+  },
+  backgroundContainer: {
+    flex:1,
+    borderRadius: 50,
+    backgroundColor: "#EBD0B5",
+    marginTop: 60,
+
   },
   loadingContainer: {
     flex: 1,
@@ -106,7 +125,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 250,
     height: 50,
-    marginBottom: 20,
+    marginTop: 50,
   },
   title: {
     fontSize: 24,
@@ -116,25 +135,28 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 20,
-    color: "#333",
+    color: "#94451E",
     marginBottom: 5,
   },
   highlight: {
-    color: "#497E13",
     fontWeight: "bold",
   },
+
   info: {
     fontSize: 16,
     color: "#555",
     marginBottom: 20,
-    textAlign: "center",
+    //textAlign: "center",
   },
   evolutionsContainer: {
-    backgroundColor: "#EFE6DA",
+    backgroundColor: "#FFFFFF",
     borderRadius: 10,
+    marginTop: -50,
     padding: 15,
-    width: "100%",
+    width: "80%",
     marginBottom: 20,
+    alignSelf: "center",
+
   },
   evolutionsTitle: {
     fontSize: 18,
@@ -153,26 +175,30 @@ const styles = StyleSheet.create({
   },
   buttonsContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
     width: "100%",
   },
   button: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
-    backgroundColor: "#B17859",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 2,
+    borderColor: "#94451E",
     padding: 15,
     borderRadius: 10,
-    width: "48%",
+    width: 114,
+    height: 107,
     justifyContent: "center",
   },
   buttonIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 10,
+    width: 50,
+    height: 50,
+    marginBottom: 10,
   },
   buttonText: {
-    color: "#fff",
+    color: "#94451E",
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 11,
+    marginBottom: 10,
   },
 });

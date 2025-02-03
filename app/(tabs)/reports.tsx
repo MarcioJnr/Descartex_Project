@@ -142,7 +142,7 @@ export default function ReportsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#DCDEC4",
     padding: 20,
   },
   header: {
@@ -159,7 +159,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#333",
+    textAlign: "center",
   },
+
   filters: {
     flexDirection: "row",
     justifyContent: "space-between",
