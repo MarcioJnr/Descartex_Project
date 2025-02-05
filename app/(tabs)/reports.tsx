@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert, Modal } from "react-native";
+import { View, Image, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Alert, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
@@ -83,9 +83,9 @@ export default function ReportsScreen() {
       {/* Cabeçalho */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButton}>Voltar</Text>
+          <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
         </TouchableOpacity>
-        <Text style={styles.title}>Relatório</Text>
+        <Text style={styles.title}>Relatórios</Text>
       </View>
 
       {/* Filtros */}
@@ -95,6 +95,12 @@ export default function ReportsScreen() {
         </TouchableOpacity>
         <TouchableOpacity style={styles.filterButton}>
           <Text style={styles.filterButtonText}>Período</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View>
+      <TouchableOpacity style={styles.exportButton}>
+        <Image source={require('../../assets/images/button_export_reports.png')}/>
         </TouchableOpacity>
       </View>
 
@@ -116,12 +122,9 @@ export default function ReportsScreen() {
       </ScrollView>
 
       {/* Botões de ação */}
-      <View style={styles.actions}>
-        <TouchableOpacity style={styles.exportButton}>
-          <Text style={styles.exportButtonText}>Exportar Relatórios em PDF</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.collectButton} onPress={openForm}>
-          <Text style={styles.collectButtonText}>Acionar Reciclo</Text>
+      <View style={styles.collectButton}>
+        <TouchableOpacity onPress={openForm}>
+        <Image source={require('../../assets/images/button_adc_reciclo.png')}/>
         </TouchableOpacity>
       </View>
 
@@ -132,7 +135,7 @@ export default function ReportsScreen() {
           style={{ flex: 1 }}
         />
         <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-          <Text style={styles.closeButtonText}>Fechar</Text>
+        <Image source={require('../../assets/images/button_adc_reciclo.png')}/>
         </TouchableOpacity>
       </Modal>
     </View>
@@ -146,25 +149,32 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20,
+    width: "100%",
+    height: 150,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    backgroundColor: "#EBD0B5",
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
   },
   backButton: {
-    fontSize: 16,
-    color: "#497E13",
     marginRight: 10,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#333",
+    color: "#94451E",
     textAlign: "center",
+    marginTop: 15,
   },
 
   filters: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: 150,
     marginBottom: 20,
   },
   filterButton: {
@@ -201,33 +211,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#555",
   },
-  actions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
   exportButton: {
-    backgroundColor: "#B17859",
-    padding: 15,
-    borderRadius: 10,
-    width: "48%",
     alignItems: "center",
-  },
-  exportButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-    fontSize: 14,
+    marginBottom: 20,
   },
   collectButton: {
-    backgroundColor: "#497E13",
-    padding: 15,
-    borderRadius: 10,
-    width: "48%",
     alignItems: "center",
-  },
-  collectButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-    fontSize: 14,
   },
   loadingContainer: {
     flex: 1,
@@ -238,10 +227,7 @@ const styles = StyleSheet.create({
   closeButton: {
     position: 'absolute',
     bottom: 20,
-    left: '40%',
-    backgroundColor: '#497E13',
-    padding: 10,
-    borderRadius: 10,
+    alignSelf: "center",
   },
   closeButtonText: {
     color: '#FFF',

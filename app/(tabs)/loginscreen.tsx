@@ -88,12 +88,7 @@ export default function LoginScreen() {
 
           <TouchableOpacity style={styles.googleButton}>
             <Text style={styles.googleButtonText}>
-              <Image
-                source={{
-                  uri: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg",
-                }}
-                style={styles.googleIcon}
-              />
+            <Image source={require('../../assets/images/icon_google.png')} style={styles.googleIcon} />
               Entrar com Google
             </Text>
           </TouchableOpacity>
@@ -197,8 +192,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 80,
   },
   googleIcon: {
-    width: 16,
-    height: 16,
+    width: 13,
+    height: 13,
     marginRight: 10,
   },
   forgotPassword: {
