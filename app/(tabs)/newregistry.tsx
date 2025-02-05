@@ -26,27 +26,34 @@ export default function NewRegistry() {
 
    return (
     <View style={styles.container}>
-      {/* Botão de voltar */}
+
+      <View style={styles.headerContainer}>
+        {/* Botão de voltar */}
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backButtonText}>← Voltar</Text>
+        <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
       </TouchableOpacity>
 
       {/* Título */}
       <Text style={styles.title}>Selecione o tipo do resíduo</Text>
 
+      </View>
+
       {/* Lista de resíduos */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {wasteTypes.map((waste, index) => (
-          <TouchableOpacity 
-            key={index} 
-            style={[styles.wasteItem, { borderColor: waste.color }]} 
-            onPress={() => handleWasteTypePress(waste.name)}
-          >
-            <Image source={waste.image} style={styles.wasteImage} />
-            <Text style={[styles.wasteText, { color: waste.color }]}>{waste.name}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+  <View style={styles.gridContainer}>
+    {wasteTypes.map((waste, index) => (
+      <TouchableOpacity 
+        key={index} 
+        style={[styles.wasteItem, { borderColor: waste.color }]} 
+        onPress={() => handleWasteTypePress(waste.name)}
+      >
+        <Image source={waste.image} style={styles.wasteImage} />
+        <Text style={[styles.wasteText, { color: waste.color }]}>{waste.name}</Text>
+      </TouchableOpacity>
+    ))}
+  </View>
+</ScrollView>
+
 
       {/* Input para "Outro" */}
       <TextInput style={styles.otherInput} placeholder="Outro" placeholderTextColor="#333" />
@@ -57,49 +64,70 @@ export default function NewRegistry() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 180,
     padding: 20,
     backgroundColor: "#DCDEC4",
   },
-  backButton: {
-    marginBottom: 20,
+  headerContainer:{
+    width: "100%",
+    height: 150,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    backgroundColor: "#EBD0B5",
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
   },
-  backButtonText: {
-    fontSize: 18,
-    color: "#333",
+  backButton: {
+    marginBottom: 10,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#333",
-    marginBottom: 20,
+    color: "#94451E",
+    alignSelf: "center",
+    textAlignVertical: "center",
   },
   scrollContainer: {
     alignItems: "center",
   },
+
+  gridContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: 100,
+    rowGap: 25,
+  },
   wasteItem: {
-    width: "100%",
+    backgroundColor: "#FFFFFF",
+    width: 100,
+    height: 100,
     padding: 15,
     borderWidth: 2,
     borderRadius: 10,
-    marginBottom: 10,
-    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
-  },
+    margin: 0,
+  },  
   wasteImage: {
     width: 50,
     height: 50,
-    marginRight: 15,
+    alignSelf: "center",
   },
   wasteText: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: "bold",
   },
   otherInput: {
-    width: "100%",
-    padding: 15,
-    borderWidth: 2,
-    borderColor: "#333",
-    borderRadius: 10,
-    marginTop: 20,
+    width: 240,
+    height: 21,
+    padding: 5,
+    marginVertical: 15,
+    borderColor: "#000",
+    borderBottomWidth: 1,
+    alignSelf: "center",
   },
 });

@@ -61,7 +61,7 @@ export default function LoginScreen() {
     <View style={styles.container}>
       {/* Logo */}
       
-        <Text style={styles.logo}>LOGO</Text>
+        <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
 
         {/* Login Form */}
         <View style={styles.form}>
@@ -88,12 +88,7 @@ export default function LoginScreen() {
 
           <TouchableOpacity style={styles.googleButton}>
             <Text style={styles.googleButtonText}>
-              <Image
-                source={{
-                  uri: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg",
-                }}
-                style={styles.googleIcon}
-              />
+            <Image source={require('../../assets/images/icon_google.png')} style={styles.googleIcon} />
               Entrar com Google
             </Text>
           </TouchableOpacity>
@@ -130,14 +125,14 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,
-    marginTop: 115,
+    marginTop: 100,
   },
 
   logo: {
     fontSize: 32,
     fontWeight: "bold",
     color: "#497E13",
-    marginBottom: 20,
+    marginTop: 70,
   },
 
   form: {
@@ -146,7 +141,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     alignItems: "center",
-    marginTop: 50
+    marginTop: 90
   },
 
   title: {
@@ -197,8 +192,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 80,
   },
   googleIcon: {
-    width: 16,
-    height: 16,
+    width: 13,
+    height: 13,
     marginRight: 10,
   },
   forgotPassword: {
@@ -209,7 +204,7 @@ const styles = StyleSheet.create({
   createAccount: {
     color: "#94451E",
     width: "100%",
-    marginTop: 30,
+    marginTop: 20,
     textDecorationLine: "underline",
     padding: 10,
     borderRadius: 50,
