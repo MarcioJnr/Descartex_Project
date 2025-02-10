@@ -54,9 +54,6 @@ export default function NewRegistry() {
   </View>
 </ScrollView>
 
-
-      {/* Input para "Outro" */}
-      <TextInput style={styles.otherInput} placeholder="Outro" placeholderTextColor="#333" />
     </View>
   );
 }
