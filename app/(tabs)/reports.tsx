@@ -90,10 +90,10 @@ export default function ReportsScreen() {
 
       {/* Filtros */}
       <View style={styles.filters}>
-        <TouchableOpacity style={styles.filterButton}>
-          <Text style={styles.filterButtonText}>Todas os resíduos</Text>
+        <TouchableOpacity style={styles.filterButtonResidue}>
+          <Text style={styles.filterButtonText}>Todos os resíduos</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.filterButton}>
+        <TouchableOpacity style={styles.filterButtonPeriod}>
           <Text style={styles.filterButtonText}>Período</Text>
         </TouchableOpacity>
       </View>
@@ -149,8 +149,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    width: "100%",
-    height: 150,
+    width: "111%",
+    height: 208,
     position: "absolute",
     top: 0,
     left: 0,
@@ -168,20 +168,33 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#94451E",
     textAlign: "center",
-    marginTop: 15,
+    marginTop: 37,
   },
 
   filters: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 150,
+    marginTop: 210,
     marginBottom: 20,
   },
-  filterButton: {
-    backgroundColor: "#FFF",
-    padding: 10,
-    borderRadius: 10,
-    width: "48%",
+  filterButtonResidue: {
+    backgroundColor: "#F1EBDD",
+    justifyContent: "center",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#94451E",
+    width: 239,
+    height: 29,
+    alignItems: "center",
+  },
+  filterButtonPeriod: {
+    backgroundColor: "#F1EBDD",
+    justifyContent: "center",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#94451E",
+    width: 104,
+    height: 29,
     alignItems: "center",
   },
   filterButtonText: {
@@ -195,7 +208,9 @@ const styles = StyleSheet.create({
   residueItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFF",
+    backgroundColor: "#DCDEC4",
+    borderWidth: 1,
+    borderColor: "#94451E",
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,

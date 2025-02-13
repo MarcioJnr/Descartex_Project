@@ -79,27 +79,27 @@ export default function HomePage() {
             {/* Gráfico Circular Placeholder */}
             <View style={styles.chartContainer}>
               <View style={styles.fakeChart} />
-              <View style={styles.legendContainer}>
-                <View style={styles.legendItem}>
-                  <View style={[styles.legendColor, { backgroundColor: "#C0DFA1" }]} />
-                  <Text style={styles.legendText}>Plástico</Text>
+                <View style={styles.legendContainer}>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendColor, { backgroundColor: "#C0DFA1" }]} />
+                   <Text style={styles.legendText}>Plástico</Text>
+                  </View>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendColor, { backgroundColor: "#D6BF86" }]} />
+                    <Text style={styles.legendText}>Metal</Text>
+                  </View>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendColor, { backgroundColor: "#5A8F45" }]} />
+                    <Text style={styles.legendText}>Vidro</Text>
+                  </View>
+                  <View style={styles.legendItem}>
+                    <View style={[styles.legendColor, { backgroundColor: "#A0C18D" }]} />
+                    <Text style={styles.legendText}>Papel</Text>
+                  </View>
                 </View>
-                <View style={styles.legendItem}>
-                  <View style={[styles.legendColor, { backgroundColor: "#5A8F45" }]} />
-                  <Text style={styles.legendText}>Vidro</Text>
-                </View>
-                <View style={styles.legendItem}>
-                  <View style={[styles.legendColor, { backgroundColor: "#D6BF86" }]} />
-                  <Text style={styles.legendText}>Metal</Text>
-                </View>
-                <View style={styles.legendItem}>
-                  <View style={[styles.legendColor, { backgroundColor: "#A0C18D" }]} />
-                  <Text style={styles.legendText}>Papel</Text>
-                </View>
-              </View>
+             </View>
             </View>
           </View>
-        </View>
 
         {/* Botões */}
         <View style={styles.buttonsContainer}>
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   evolutionsTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#7B3F00",
+    color: "#94451E",
     textAlign: "center",
     marginBottom: 15,
   },
@@ -207,6 +207,7 @@ const styles = StyleSheet.create({
     width: "35%",
   },
   fakeChart: {
+    
     width: 80,
     height: 80,
     borderRadius: 40,
@@ -215,14 +216,23 @@ const styles = StyleSheet.create({
   legendContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center",
-    gap: 10,
-    rowGap: 10,
+    justifyContent: "space-between",
+    rowGap: 5,
+    marginBottom: 9,
   },
   legendItem: {
     flexDirection: "row",
+    flexWrap: "wrap",
+    rowGap: 10,
     alignItems: "center",
-    marginBottom: 3,
+    
+    //marginBottom: 0,
+  },
+  legendItemDown: {
+    flexDirection: "row",
+    marginEnd: -1,
+    alignItems: "center",
+    //marginBottom: 0,
   },
   legendColor: {
     width: 12,

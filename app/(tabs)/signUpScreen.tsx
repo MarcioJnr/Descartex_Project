@@ -69,7 +69,7 @@ export default function SignUpScreen() {
     return (
         <View style={styles.container}>
 
-          <Text style={styles.logo}>LOGO</Text>
+          <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
 
           <View style={styles.form}>
                     <Text style={styles.title}>Dados de cadastro</Text>
@@ -82,14 +82,14 @@ export default function SignUpScreen() {
                     />
                     <TextInput
                       style={styles.input}
-                      placeholder="CPF"
+                      placeholder="Cpf"
                       placeholderTextColor="#555"
                       value={CPF}
                       onChangeText={setCPF}
                     />
                     <TextInput
                       style={styles.input}
-                      placeholder="Email"
+                      placeholder="E-mail"
                       placeholderTextColor="#555"
                       value={email}
                       onChangeText={setEmail}
@@ -141,10 +141,8 @@ export default function SignUpScreen() {
       },
 
       logo: {
-        fontSize: 32,
-        fontWeight: "bold",
-        color: "#497E13",
-        marginBottom: 20,
+        marginTop: -50,
+        marginBottom: 70,
       },
     
       form: {
@@ -171,7 +169,7 @@ export default function SignUpScreen() {
         width: "75%",
         fontSize: 14,
         padding: 5,
-        marginVertical: 15,
+        marginVertical: 5,
         borderColor: "#000",
         borderBottomWidth: 1,
       },
