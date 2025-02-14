@@ -18,6 +18,7 @@
     "@react-native-firebase/app": "^21.7.1",
     "@react-native-firebase/firestore": "^21.7.1",
     "@react-native-firebase/storage": "^21.7.1",
+    "@react-native-picker/picker": "^2.11.0",
     "@react-navigation/native": "^7.0.14",
     "@react-navigation/stack": "^7.1.1",
     "@types/styled-components": "^5.1.34",

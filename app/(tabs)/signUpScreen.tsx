@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Picker } from '@react-native-picker/picker';
 import {
   View,
   Text,
@@ -16,8 +17,7 @@ import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { RootStackParamList } from "../../types";
 
-  
-  const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function SignUpScreen() {
   const [name, setName] = useState("");
@@ -25,112 +25,106 @@ export default function SignUpScreen() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [funct, setFunct] = useState("");
+  const [funct, setFunct] = useState("Colaborador");
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  
-        const SignUp = async () => {
-          if (!name || !CPF || !email || !phone || !funct || !password) {
-            Alert.alert('Erro', 'Por favor, preencha todos os campos.');
-            return;
-          }
-
-          try {
-            // Criar usuário no Firebase Authentication
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const userId = userCredential.user.uid;
-      
-            // Salvar informações no Firestore
-            await setDoc(doc(db, 'users', userId), {
-              name,
-              CPF,
-              email,
-              phone,
-              funct,
-              createdAt: serverTimestamp(),
-            });
-      
-            Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
-          } catch (error:any) {
-            if (error.code === 'auth/email-already-in-use') {
-              alert('Já existe uma conta com o endereço de email fornecido.');
-            }
-            else if (error.code === 'auth/invalid-email') {
-              alert('O endereço de email não é válido.');
-            } else{
-              console.error('Erro ao cadastrar:', error);
-              Alert.alert('Erro', 'Ocorreu um erro desconhecido.'); // Adicionar alguns possíveis erros
-            }
-           
-          }
-        };
-
-
-    return (
-        <View style={styles.container}>
-
-          <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
-
-          <View style={styles.form}>
-                    <Text style={styles.title}>Dados de cadastro</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Nome Completo"
-                      placeholderTextColor="#555"
-                      value={name}
-                      onChangeText={setName}
-                    />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Cpf"
-                      placeholderTextColor="#555"
-                      value={CPF}
-                      onChangeText={setCPF}
-                    />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="E-mail"
-                      placeholderTextColor="#555"
-                      value={email}
-                      onChangeText={setEmail}
-                    />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Telefone"
-                      placeholderTextColor="#555"
-                      value={phone}
-                      onChangeText={setPhone}
-                    />
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Função Principal na Empresa"
-                      placeholderTextColor="#555"
-                      value={funct}
-                      onChangeText={setFunct}
-                    />
-
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Senha"
-                      placeholderTextColor="#555"
-                      secureTextEntry
-                      value={password}
-                      onChangeText={setPassword}
-                    />
-          
-                    <TouchableOpacity style={styles.SignUpButton} onPress={SignUp}>
-                      <Text style={styles.loginButtonText}>Cadastrar</Text>
-                    </TouchableOpacity>  
-
-                    <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                              <Text style={styles.SignInButton} >Já possui cadastro? Voltar para o login.</Text>
-                            </TouchableOpacity>
-
-                  </View>
-
-        </View>
-      );
+  const SignUp = async () => {
+    if (!name || !CPF || !email || !phone || !funct || !password) {
+      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
     }
+
+    try {
+      // Criar usuário no Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userId = userCredential.user.uid;
+
+      // Salvar informações no Firestore
+      await setDoc(doc(db, 'users', userId), {
+        name,
+        CPF,
+        email,
+        phone,
+        funct,
+        createdAt: serverTimestamp(),
+      });
+
+      Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+    } catch (error:any) {
+      if (error.code === 'auth/email-already-in-use') {
+        alert('Já existe uma conta com o endereço de email fornecido.');
+      }
+      else if (error.code === 'auth/invalid-email') {
+        alert('O endereço de email não é válido.');
+      } else{
+        console.error('Erro ao cadastrar:', error);
+        Alert.alert('Erro', 'Ocorreu um erro desconhecido.'); // Adicionar alguns possíveis erros
+      }
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+      <View style={styles.form}>
+        <Text style={styles.title}>Dados de cadastro</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Nome Completo"
+          placeholderTextColor="#555"
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Cpf"
+          placeholderTextColor="#555"
+          value={CPF}
+          onChangeText={setCPF}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="E-mail"
+          placeholderTextColor="#555"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Telefone"
+          placeholderTextColor="#555"
+          value={phone}
+          onChangeText={setPhone}
+        />
+        <View style={styles.pickerContainer}>
+          <Text style={styles.pickerLabel}>Função Principal na Empresa</Text>
+          <Picker
+            selectedValue={funct}
+            style={styles.picker}
+            onValueChange={(itemValue) => setFunct(itemValue)}
+          >
+            <Picker.Item label="Colaborador" value="Colaborador" />
+            <Picker.Item label="Analista" value="Analista" />
+          </Picker>
+        </View>
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          placeholderTextColor="#555"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity style={styles.SignUpButton} onPress={SignUp}>
+          <Text style={styles.loginButtonText}>Cadastrar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={styles.SignInButton}>Já possui cadastro? Voltar para o login.</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
     
     const styles = StyleSheet.create({
       container: {
@@ -195,6 +189,22 @@ export default function SignUpScreen() {
         //marginTop: 10,
         marginBottom: 50,
         textDecorationLine: "underline",
+      },
+
+      pickerContainer: {
+        width: "75%",
+        marginVertical: 15,
+      },
+      pickerLabel: {
+        width: "100%",
+        fontSize: 14,
+        color: "#555",
+        marginBottom: 5,
+      },
+      picker: {
+        width: "100%",
+        borderColor: "#000",
+        borderBottomWidth: 1,
       },
       
     })

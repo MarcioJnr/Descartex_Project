@@ -51,7 +51,6 @@ export default function LoginScreen() {
 
   function SignIn() {
     signInWithEmailAndPassword(auth, email, password)
-    .then(() => alert("Usuario logado!"))
     .catch(error => alert(error.message));
     //Lembrar de informar o erro ao usuário de forma mais amigável
   }
