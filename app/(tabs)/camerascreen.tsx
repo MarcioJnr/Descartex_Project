@@ -67,11 +67,20 @@ export default function CameraScreen({ route }: Props) {
     try {
       const apiKey = "AIzaSyBRQC80PTrBCVW_yrN3q2q34Y1AF9TtABA";
       const apiUrl = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
-
+  
+      // Ler a imagem como base64
       const base64Image = await FileSystem.readAsStringAsync(photoUri, {
         encoding: FileSystem.EncodingType.Base64,
       });
-
+  
+      //região de interesse (ROI) para melhorar a precisão da detecção
+      const roi = {
+        left: 0.25,   
+        top: 0.1,     
+        width: 0.5,   
+        height: 0.1,
+      };
+  
       const requestBody = {
         requests: [
           {
@@ -83,10 +92,15 @@ export default function CameraScreen({ route }: Props) {
                 type: "TEXT_DETECTION",
               },
             ],
+            imageContext: {
+              cropHintsParams: {
+                aspectRatios: [roi.width / roi.height],
+              },
+            },
           },
         ],
       };
-
+  
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -94,14 +108,25 @@ export default function CameraScreen({ route }: Props) {
         },
         body: JSON.stringify(requestBody),
       });
-
+  
       if (!response.ok) {
         throw new Error(`Erro na requisição: ${response.statusText}`);
       }
-
+  
       const data = await response.json();
       const text = data.responses[0]?.fullTextAnnotation?.text || "Nenhum texto detectado.";
-      return text;
+  
+      // Filtrar apenas números usando regex
+      const numbers = text.match(/\d+/g);
+  
+      if (!numbers || numbers.length === 0) {
+        return "Nenhum número detectado.";
+      }
+  
+      const allNumbers = numbers.join('');
+      const firstFourNumbers = allNumbers.slice(0, 4);
+  
+      return firstFourNumbers;
     } catch (error) {
       console.error("Erro ao realizar OCR:", error);
       return null;
