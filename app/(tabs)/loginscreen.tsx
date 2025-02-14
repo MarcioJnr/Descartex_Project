@@ -87,8 +87,8 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.googleButton}>
+          <Image source={require('../../assets/images/icon_google.png')} style={styles.googleIcon} />
             <Text style={styles.googleButtonText}>
-            <Image source={require('../../assets/images/icon_google.png')} style={styles.googleIcon} />
               Entrar com Google
             </Text>
           </TouchableOpacity>
@@ -125,14 +125,11 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,
-    marginTop: 100,
+    marginTop: 200,
   },
 
   logo: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#497E13",
-    marginTop: 70,
+    marginTop: 80,
   },
 
   form: {
@@ -146,8 +143,8 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 24,
-    fontWeight: "bold",
-    color: "#000",
+    fontWeight: "500",
+    color: "#F1EBDD",
     marginBottom: 15,
   },
 
@@ -170,12 +167,13 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   loginButtonText: {
+    fontSize: 16,
     color: "#94451E",
     fontWeight: "bold",
   },
   googleButton: {
-
     alignItems: "center",
+    flexDirection: "row",
     backgroundColor: "#F1EBDD",
     borderRadius: 5,
     width: "75%",
@@ -186,15 +184,17 @@ const styles = StyleSheet.create({
     borderColor: "#94451E",
   },
   googleButtonText: {
+    fontSize: 16,
     color: "#747375",
     fontWeight: "bold",
     marginRight: 10,
     shadowOpacity: 80,
   },
   googleIcon: {
-    width: 13,
-    height: 13,
+    width: 15.75,
+    height: 18,
     marginRight: 10,
+    marginLeft: 14,
   },
   forgotPassword: {
     color: "#94451E",
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   createAccount: {
     color: "#94451E",
     width: "100%",
-    marginTop: 20,
+    marginTop: 25,
     textDecorationLine: "underline",
     padding: 10,
     borderRadius: 50,

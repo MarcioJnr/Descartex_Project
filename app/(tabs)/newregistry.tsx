@@ -53,7 +53,6 @@ export default function NewRegistry() {
     ))}
   </View>
 </ScrollView>
-
     </View>
   );
 }
@@ -66,8 +65,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#DCDEC4",
   },
   headerContainer:{
-    width: "100%",
-    height: 150,
+    flex: 1,
+    width: "111%",
+    height: 208,
     position: "absolute",
     top: 0,
     left: 0,
@@ -82,12 +82,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    marginTop: 25,
     fontWeight: "bold",
     color: "#94451E",
     alignSelf: "center",
     textAlignVertical: "center",
   },
   scrollContainer: {
+    marginTop: 60,
     alignItems: "center",
   },
 
