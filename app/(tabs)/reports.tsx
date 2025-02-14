@@ -107,7 +107,7 @@ export default function ReportsScreen() {
       {/* Lista de resíduos */}
       <ScrollView style={styles.residuesList}>
         {residues.map((residue) => (
-          <View key={residue.id} style={styles.residueItem}>
+          <TouchableOpacity key={residue.id} style={styles.residueItem}>
             <TouchableOpacity
               style={styles.checkbox}
               onPress={() => toggleCheck(residue.id)}
@@ -117,7 +117,7 @@ export default function ReportsScreen() {
             <Text style={styles.residueText}>
               {residue.date} - {residue.type} - {residue.weight}
             </Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    width: "111%",
+    width: "100%",
     height: 208,
     position: "absolute",
     top: 0,
@@ -224,7 +224,8 @@ const styles = StyleSheet.create({
   },
   residueText: {
     fontSize: 14,
-    color: "#555",
+    fontWeight: "600",
+    color: "#94451E",
   },
   exportButton: {
     alignItems: "center",
