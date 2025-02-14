@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,
-    marginTop: 200,
+    marginTop: 80,
   },
 
   logo: {
