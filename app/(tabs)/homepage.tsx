@@ -14,10 +14,6 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   //interface do analista
   const [wichFun, setWichFun] = useState(true);
-
-  const ifAnalyst = () => {
-    setWichFun(false);
-  }
   
   useEffect(() => {
     console.log("localUserData atualizado:", localUserData);

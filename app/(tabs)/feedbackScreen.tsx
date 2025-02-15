@@ -1,18 +1,25 @@
+import { RootStackParamList } from "@/types";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
+
+
+
 const FeedbackScreen = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.title}>Resíduo Registrado com Sucesso!</Text>
         
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NewRegistry')}>
           <Image source={require("./../../assets/images/icon_cam.png")} style={styles.icon} />
           <Text style={styles.buttonText}>Novo Registro</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HomePage')}>
           <Image source={require("./../../assets/images/icon_home.png")} style={styles.icon} />
           <Text style={styles.buttonText}>Voltar para a página inicial</Text>
         </TouchableOpacity>
