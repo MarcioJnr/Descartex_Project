@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "331724045014",
+    "project_id": "descartex-bb802",
+    "storage_bucket": "descartex-bb802.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331724045014:android:ae0fdadb0b5fa4f7dc2777",
+        "android_client_info": {
+          "package_name": "com.descartex.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxjeKFBsAS2uV7JzUiFjDzWzvMygGM_80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331724045014:android:698911a013ea895cdc2777",
+        "android_client_info": {
+          "package_name": "com.descartex_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxjeKFBsAS2uV7JzUiFjDzWzvMygGM_80"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
