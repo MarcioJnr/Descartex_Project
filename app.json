@@ -21,8 +21,12 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-        "googleServicesFile": "./google-services.json",
-        "package": "com.descartex.project"
+      "googleServicesFile": "./google-services.json",
+      "package": "com.descartex.project",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -42,6 +46,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "f77e854f-7941-494d-983e-8d5921bdea04"
+      }
     }
   }
 }
