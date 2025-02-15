@@ -7,4 +7,6 @@ export type RootStackParamList = {
   NewReport: { photo: string; text: string; wastetype: string; date: string }; // Parâmetros da rota NewReport
   NewRegistry: undefined;
   Reports: undefined; 
+  FeedbackScreen: undefined;
+
 };

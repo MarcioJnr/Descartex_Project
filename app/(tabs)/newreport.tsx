@@ -69,7 +69,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
   
       console.log("Relatório salvo no Firestore com sucesso!");
       Alert.alert("Sucesso", "Relatório salvo com sucesso!");
-      navigation.navigate("HomePage");
+      navigation.navigate("FeedbackScreen");
     } catch (error) {
       console.error("Erro ao salvar relatório:", error);
       Alert.alert("Erro", "Ocorreu um erro ao salvar o relatório.");
@@ -83,7 +83,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
       <Text style={styles.wasteTypeText}>{wastetype}</Text>
       <Text style={styles.ocrText}>{text}</Text>
       <TouchableOpacity style={styles.confirmButton} onPress={saveReportToFirebase}>
-        <Text style={styles.buttonText}>Confirmar</Text>
+        <Text style={styles.buttonText} >Confirmar</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.retakeButton} onPress={() => navigation.goBack()}>
         <Text style={styles.buttonText}>Não, tirar outra foto</Text>
