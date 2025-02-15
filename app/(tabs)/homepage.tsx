@@ -12,6 +12,16 @@ export default function HomePage() {
   const navigation = useNavigation<HomePageNavigationProp>();
   const [localUserData, setLocalUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+  //interface do analista
+  const [wichFun, setWichFun] = useState(true);
+
+  const ifAnalyst = () => {
+    setWichFun(false);
+  }
+  
+  useEffect(() => {
+    console.log("localUserData atualizado:", localUserData);
+  }, [localUserData]);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -27,6 +37,12 @@ export default function HomePage() {
 
     getUserData();
   }, []);
+
+  useEffect(() => {
+    if (localUserData?.funct == "Colaborador") {
+      setWichFun(false);
+    }
+  }, [localUserData]);
 
   if (loading) {
     return (
@@ -62,6 +78,7 @@ export default function HomePage() {
           
           <View style={styles.evolutionContent}>
             {/* Residômetro */}
+            {wichFun &&
             <View style={styles.residometerContainer}>
               <Image 
                 source={require('../../assets/images/vector_residometro.png')} 
@@ -74,9 +91,10 @@ export default function HomePage() {
                 {localUserData?.totalWaste || 0} kg
               </Text>
 
-            </View>
+            </View>}
 
             {/* Gráfico Circular Placeholder */}
+            {wichFun && 
             <View style={styles.chartContainer}>
               <View style={styles.fakeChart} />
                 <View style={styles.legendContainer}>
@@ -97,21 +115,22 @@ export default function HomePage() {
                     <Text style={styles.legendText}>Papel</Text>
                   </View>
                 </View>
-             </View>
+             </View>}
             </View>
           </View>
 
         {/* Botões */}
         <View style={styles.buttonsContainer}>
+        
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NewRegistry')}>
             <Text style={styles.buttonText}>Novo Registro</Text>
             <Image source={require('../../assets/images/icon_cam.png')} style={styles.buttonIcon} />
           </TouchableOpacity>
-
+          {wichFun &&     
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Reports')}>
             <Text style={styles.buttonText}>Relatórios</Text>
             <Image source={require('../../assets/images/icon_report.png')} style={styles.buttonIcon} />
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
       </View>
     </View>

@@ -5,6 +5,7 @@ export interface UserData {
   uid: string;
   name: string;
   totalWaste: number;
+  funct?: string;
   email: string;
 }
 
