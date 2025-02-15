@@ -10,26 +10,6 @@ type Props = StackScreenProps<RootStackParamList, "NewReport">;
 
 const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
   const { photo, text, wastetype, date } = route.params;
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!auth.currentUser) {
-      console.log("Usuário não autenticado, redirecionando para Login...");
-      navigation.navigate("Login");
-    } else {
-      console.log("Usuário autenticado:", auth.currentUser.uid);
-      setLoading(false);
-    }
-  }, []);
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#497E13" />
-        <Text>Verificando autenticação...</Text>
-      </View>
-    );
-  }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -47,9 +27,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
         Alert.alert("Erro", "Usuário não autenticado.");
         return;
       }
-  
-      console.log("Usuário autenticado:", user.uid);
-  
+    
       const photoRef = ref(storage, `reports/${user.uid}/${Date.now()}.jpg`);
       const response = await fetch(photo);
       const blob = await response.blob();
@@ -61,7 +39,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
       await addDoc(collection(db, "reports"), {
         userId: user.uid,
         wasteType: wastetype,
-        weight: text,
+        weight: parseFloat(text),
         date: date,
         photoUrl: photoUrl,
         createdAt: serverTimestamp(),
