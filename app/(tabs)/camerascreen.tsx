@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { Button, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Image } from "react-native";
+import * as ImageManipulator from 'expo-image-manipulator';
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from 'expo-file-system';
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -63,81 +64,51 @@ export default function CameraScreen({ route }: Props) {
     }
   };
 
-const performOCR = async (photoUri: string) => {
-  try {
-    const apiKey = "AIzaSyBRQC80PTrBCVW_yrN3q2q34Y1AF9TtABA";
-    const apiUrl = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
-
-    // Ler a imagem como base64
-    const base64Image = await FileSystem.readAsStringAsync(photoUri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-
-    // Região de interesse (ROI) para melhorar a precisão da detecção
-    const roi = {
-      left: 0.25,
-      top: 0.1,
-      width: 0.5,
-      height: 0.1,
-    };
-
-    const requestBody = {
-      requests: [
-        {
-          image: {
-            content: base64Image,
+  const performOCR = async (photoUri: string) => {
+    try {
+      const apiKey = "AIzaSyBRQC80PTrBCVW_yrN3q2q34Y1AF9TtABA";
+      const apiUrl = `https://vision.googleapis.com/v1/images:annotate?key=${apiKey}`;
+  
+      const optimizedImage = await ImageManipulator.manipulateAsync(
+        photoUri,
+        [{ resize: { width: 1500 } }],
+        { compress: 0.9, format: ImageManipulator.SaveFormat.JPEG }
+      );
+  
+      const base64Image = await FileSystem.readAsStringAsync(optimizedImage.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+  
+      const requestBody = {
+        requests: [
+          {
+            image: { content: base64Image },
+            features: [{ type: "TEXT_DETECTION" }], 
           },
-          features: [
-            {
-              type: "TEXT_DETECTION",
-            },
-          ],
-          imageContext: {
-            cropHintsParams: {
-              aspectRatios: [roi.width / roi.height],
-            },
-          },
-        },
-      ],
-    };
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Erro na requisição: ${response.statusText}`);
+        ],
+      };
+  
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+  
+      if (!response.ok) throw new Error(`Erro na requisição: ${response.statusText}`);
+  
+      const data = await response.json();
+      const text = data.responses[0]?.fullTextAnnotation?.text || "";
+      
+      const numbers = text.match(/\d+/g);
+      if (!numbers || numbers.length === 0) return "Nenhum número detectado.";
+  
+      return parseInt(numbers.join('').slice(0, 4), 10).toString();
+    } catch (error) {
+      console.error("Erro ao realizar OCR:", error);
+      return null;
     }
-
-    const data = await response.json();
-    const text = data.responses[0]?.fullTextAnnotation?.text || "Nenhum texto detectado.";
-
-    // Capturar números que podem conter pontos ou vírgulas como separadores decimais
-    const numbers = text.match(/\d+([.,]\d+)?/g);
-
-    if (!numbers || numbers.length === 0) {
-      return "Nenhum número detectado.";
-    }
-
-    // Juntar todos os números detectados
-    const allNumbers = numbers.join('');
-
-    // Substituir vírgulas por pontos para padronizar o formato decimal
-    const formattedNumber = allNumbers.replace(',', '.');
-
-    // Retornar os primeiros 4 caracteres (ou menos, se não houver)
-    const firstFourNumbers = formattedNumber.slice(0, 4);
-
-    return firstFourNumbers;
-  } catch (error) {
-    console.error("Erro ao realizar OCR:", error);
-    return null;
-  }
-};
+  };
+  
 
   return (
     <View style={styles.container}>

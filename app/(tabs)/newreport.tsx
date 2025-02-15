@@ -5,14 +5,11 @@ import { RootStackParamList } from "../../types";
 import { auth, db, storage } from "../../assets/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { Picker } from "@react-native-picker/picker";
-
 
 type Props = StackScreenProps<RootStackParamList, "NewReport">;
 
 const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
   const { photo, text, wastetype, date } = route.params;
-  const [unit, setUnit] = useState("g"); // Define "g" como padrão
 
   const wasteTypes = [
     { name: "Plástico", color: "#FF3B30", image: require("../../assets/images/vector_plastico.png") },
@@ -43,8 +40,8 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
         return;
       }
 
-      const weight = parseFloat(text);
-      const weightInKg = unit === "g" ? weight / 1000 : weight; // Converte para kg se necessário
+      // Converter o valor para número e garantir que seja tratado como gramas
+      const weightInGrams = parseFloat(text) / 1000;
 
       const photoRef = ref(storage, `reports/${user.uid}/${Date.now()}.jpg`);
       const response = await fetch(photo);
@@ -57,7 +54,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
       await addDoc(collection(db, "reports"), {
         userId: user.uid,
         wasteType: wastetype,
-        weight: weightInKg, // Salva o valor convertido no banco
+        weight: weightInGrams,
         date: date,
         photoUrl: photoUrl,
         createdAt: serverTimestamp(),
@@ -80,15 +77,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
         <View style={styles.wasteTypeContainer}>
           <Image source={selectedWasteType?.image} style={styles.wasteTypeImage} />
           <Text style={styles.wasteTypeText}>{wastetype}</Text>
-          <Text style={styles.weightText}>{text}</Text>
-            <Picker
-            selectedValue={unit}
-            style={styles.picker}
-            onValueChange={(itemValue: string) => setUnit(itemValue)}
-            >
-            <Picker.Item label="g" value="g" />
-            <Picker.Item label="kg" value="kg" />
-            </Picker>
+          <Text style={styles.weightText}>{text}g</Text>
         </View>
         <Image source={{ uri: photo }} style={styles.image} />
       </View>
@@ -156,13 +145,9 @@ const styles = StyleSheet.create({
     color: "#333",
     marginRight: 10,
   },
-  picker: {
-    height: 60,
-    width: 110,
-  },
   image: {
     width: 250,
-    height: 250,
+    height: 400,
     borderRadius: 10,
     marginBottom: 20,
   },
