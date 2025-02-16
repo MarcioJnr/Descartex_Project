@@ -50,6 +50,7 @@ export default function SignUpScreen() {
       });
 
       Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+      navigation.navigate('Login');
     } catch (error:any) {
       if (error.code === 'auth/email-already-in-use') {
         alert('Já existe uma conta com o endereço de email fornecido.');

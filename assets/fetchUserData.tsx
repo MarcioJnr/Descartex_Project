@@ -4,6 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 export interface UserData {
   uid: string;
   name: string;
+  funct?: string;
   email: string;
 }
 

@@ -62,7 +62,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
 
       console.log("Relatório salvo no Firestore com sucesso!");
       Alert.alert("Sucesso", "Relatório salvo com sucesso!");
-      navigation.navigate("HomePage");
+      navigation.navigate("FeedbackScreen");
     } catch (error) {
       console.error("Erro ao salvar relatório:", error);
       Alert.alert("Erro", "Ocorreu um erro ao salvar o relatório.");

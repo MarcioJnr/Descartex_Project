@@ -24,6 +24,7 @@ export default function NewRegistry() {
     navigation.navigate('CameraScreen', { wastetype });
   };
 
+
    return (
     <View style={styles.container}>
 

@@ -16,7 +16,11 @@ export default function HomePage() {
   const [localUserData, setLocalUserData] = useState<UserData | null>(null);
   const [reportsData, setReportsData] = useState<{ totalWaste: number, wasteByType: Record<string, number> } | null>(null);
   const [loading, setLoading] = useState(true);
-  const screenWidth = Dimensions.get('window').width;
+  const [isAnalista, setIsAnalista] = useState(true);
+  
+  useEffect(() => {
+    console.log("localUserData atualizado:", localUserData);
+  }, [localUserData]);
 
   const DonutChart = ({ data }: { data: Record<string, number> }) => {
     // Verifica se data existe e não está vazio
@@ -98,6 +102,12 @@ useEffect(() => {
   getUserData();
 }, []);
 
+useEffect(() => {
+  if (localUserData?.funct == "Colaborador") {
+    setIsAnalista(false);
+  }
+}, [localUserData]);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -125,11 +135,12 @@ useEffect(() => {
       </View>
   
       <View style={styles.backgroundContainer}>
+      {isAnalista &&
         <View style={styles.evolutionsContainer}>
           <Text style={styles.evolutionsTitle}>EVOLUÇÕES SEMANAIS (KG)</Text>
           
           <View style={styles.evolutionContent}>
-            {/* Residômetro */}
+
             <View style={styles.residometerContainer}>
               <Image 
                 source={require('../../assets/images/vector_residometro.png')} 
@@ -142,8 +153,6 @@ useEffect(() => {
                 {reportsData?.totalWaste || 0}
               </Text>
             </View>
-  
-            {/* Gráfico Circular */}
             <View style={styles.chartWrapper}>
               <DonutChart data={reportsData?.wasteByType || {}} />
               <View style={styles.legendContainer}>
@@ -156,19 +165,21 @@ useEffect(() => {
               </View>
             </View>
           </View>
-        </View>
+        </View>}
   
         {/* Botões */}
         <View style={styles.buttonsContainer}>
+        
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NewRegistry')}>
             <Text style={styles.buttonText}>Novo Registro</Text>
             <Image source={require('../../assets/images/icon_cam.png')} style={styles.buttonIcon} />
           </TouchableOpacity>
   
+          {isAnalista &&
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Reports')}>
             <Text style={styles.buttonText}>Relatórios</Text>
             <Image source={require('../../assets/images/icon_report.png')} style={styles.buttonIcon} />
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
       </View>
     </View>
