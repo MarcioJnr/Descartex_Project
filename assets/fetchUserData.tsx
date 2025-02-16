@@ -5,7 +5,6 @@ export interface UserData {
   uid: string;
   name: string;
   funct?: string;
-
   email: string;
 }
 
