@@ -5,10 +5,10 @@ export interface ReportData {
   userId: string;
   wasteType: string;
   weight: number;
-  date: string; 
+  date: string;
 }
 
-export const fetchUserReports = async (): Promise<{ 
+export const fetchUserReports = async (isAnalista: boolean): Promise<{ 
   totalWaste: number, 
   wasteByType: Record<string, number>, 
   reportCount: number 
@@ -20,16 +20,27 @@ export const fetchUserReports = async (): Promise<{
   
     const reportsCollectionRef = collection(db, "reports");
 
+    // Calculando a data de uma semana atrás
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    const oneWeekAgoISO = oneWeekAgo.toISOString(); 
+    const oneWeekAgoISO = oneWeekAgo.toISOString();
     
-    // Criando a query para filtrar os relatórios do usuário e da última semana
-    const q = query(
-      reportsCollectionRef,
-      where("userId", "==", auth.currentUser.uid),
-      where("date", ">=", oneWeekAgoISO) 
-    );
+    // Criando a query baseada no tipo de usuário
+    let q;
+    if (isAnalista) {
+      // Analista: busca todos os relatórios da última semana (sem filtrar por userId)
+      q = query(
+        reportsCollectionRef,
+        where("date", ">=", oneWeekAgoISO)
+      );
+    } else {
+      // Colaborador: busca apenas os relatórios do usuário atual da última semana
+      q = query(
+        reportsCollectionRef,
+        where("userId", "==", auth.currentUser.uid),
+        where("date", ">=", oneWeekAgoISO)
+      );
+    }
     
     const querySnapshot = await getDocs(q);
   

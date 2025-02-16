@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
 import { fetchUserData, UserData } from "../../assets/fetchUserData";
 import { fetchUserReports } from "../../assets/fetchUserReports";
-import { auth } from "../../assets/firebaseConfig";
+import { auth, signOut } from "../../assets/firebaseConfig"; // Importe signOut
 import { PieChart } from 'react-native-chart-kit';
 
 type HomePageNavigationProp = StackNavigationProp<RootStackParamList, 'HomePage'>;
@@ -21,8 +21,17 @@ export default function HomePage() {
     console.log("localUserData atualizado:", localUserData);
   }, [localUserData]);
 
+  // Função para fazer logout
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Faz logout
+      navigation.replace('Login');
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
+
   const DonutChart = ({ data }: { data: Record<string, number> }) => {
-    // Verifica se data existe e não está vazio
     if (!data || Object.keys(data).length === 0) {
       return (
         <View style={styles.donutChartContainer}>
@@ -58,60 +67,61 @@ export default function HomePage() {
       </View>
     );
   };
-// Função auxiliar para obter cores com base no tipo de resíduo
-const getColorForWasteType = (wasteType: string): string => {
-  switch (wasteType) {
-    case "Plástico":
-      return "#F24822";
-    case "Metal":
-      return "#F1C100";
-    case "Vidro":
-      return "#00AF35";
-    case "Papel":
-      return "#0184FF";
-    case "Orgânico":
-      return "#94451E";
-    case "Rejeito":
-      return "#9747FF";
-    case "Eletrônico":
-      return "#1E1E1E";
-    case "Isopor":
-      return "#CE0CAB";
-    default:
-      return "#D3D3D3";
-  }
-};
 
-
-useEffect(() => {
-  const getUserData = async () => {
-    try {
-      const userData = await fetchUserData();
-      setLocalUserData(userData);
-
-      const reports = await fetchUserReports();
-      setReportsData(reports || { totalWaste: 0, wasteByType: {} }); // Fallback para dados inválidos
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
+  const getColorForWasteType = (wasteType: string): string => {
+    switch (wasteType) {
+      case "Plástico":
+        return "#F24822";
+      case "Metal":
+        return "#F1C100";
+      case "Vidro":
+        return "#00AF35";
+      case "Papel":
+        return "#0184FF";
+      case "Orgânico":
+        return "#94451E";
+      case "Rejeito":
+        return "#9747FF";
+      case "Eletrônico":
+        return "#1E1E1E";
+      case "Isopor":
+        return "#CE0CAB";
+      default:
+        return "#D3D3D3";
     }
   };
 
-  getUserData();
-}, []);
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const userData = await fetchUserData();
+        setLocalUserData(userData);
 
-useEffect(() => {
-  if (localUserData?.funct == "Colaborador") {
-    setIsAnalista(false);
-  }
-}, [localUserData]);
+        const reports = await fetchUserReports(isAnalista);
+        setReportsData(reports || { totalWaste: 0, wasteByType: {}, reportCount: 0 });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUserData();
+  }, [isAnalista]);
+
+  useEffect(() => {
+    if (localUserData?.funct === "Colaborador") {
+      setIsAnalista(false);
+    } else {
+      setIsAnalista(true);
+    }
+  }, [localUserData]);
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#497E13" />
-        <Text>Verificando autenticação...</Text>
+        <Text>Carregando...</Text>
       </View>
     );
   }
@@ -125,12 +135,15 @@ useEffect(() => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Sair</Text>
+        </TouchableOpacity>
         <Text style={styles.greeting}>
           Olá, <Text style={styles.highlight}>{localUserData?.name || "Usuário"}!</Text>
         </Text>
         {isAnalista &&
         <Text style={styles.info}>
-          Já acumulamos <Text style={styles.highlight}>{reportsData?.totalWaste || 0}kg</Text> de resíduos esta semana.
+          Já acumulamos <Text style={styles.highlight}>{reportsData?.totalWaste.toFixed(2) || 0}kg</Text> de resíduos esta semana.
         </Text>}
         {!isAnalista &&
         <Text style={styles.info}>
@@ -144,7 +157,6 @@ useEffect(() => {
           <Text style={styles.evolutionsTitle}>EVOLUÇÕES SEMANAIS (KG)</Text>
           
           <View style={styles.evolutionContent}>
-
             <View style={styles.residometerContainer}>
               <Image 
                 source={require('../../assets/images/vector_residometro.png')} 
@@ -154,7 +166,7 @@ useEffect(() => {
                 <Text>Residômetro</Text>
               </Text>
               <Text style={styles.wasteText}>
-                {reportsData?.totalWaste || 0}
+                {reportsData?.totalWaste.toFixed(2) || 0}
               </Text>
             </View>
             <View style={styles.chartWrapper}>
@@ -163,7 +175,7 @@ useEffect(() => {
                 {reportsData?.wasteByType && Object.entries(reportsData.wasteByType).map(([type, weight]) => (
                   <View style={styles.legendItem} key={type}>
                     <View style={[styles.legendColor, { backgroundColor: getColorForWasteType(type) }]} />
-                    <Text style={styles.legendText}>{type}: {weight}</Text>
+                    <Text style={styles.legendText}>{type}: {weight.toFixed(1)}</Text>
                   </View>
                 ))}
               </View>
@@ -173,7 +185,6 @@ useEffect(() => {
   
         {/* Botões */}
         <View style={styles.buttonsContainer}>
-        
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NewRegistry')}>
             <Text style={styles.buttonText}>Novo Registro</Text>
             <Image source={require('../../assets/images/icon_cam.png')} style={styles.buttonIcon} />
@@ -248,15 +259,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: "100%", // Garante que o container ocupe toda a largura disponível
+    width: "100%",
   },
   residometerContainer: {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    width: "50%", // Ocupa 50% da largura
+    width: "50%",
   },
-
   residometerIcon: {
     width: 90,
     height: 90,
@@ -354,5 +364,17 @@ const styles = StyleSheet.create({
     width: "50%",
     alignItems: "center",
     justifyContent: "center",
-  }
+  },
+  logoutButton: {
+    position: "absolute",
+    top: 60,
+    right: 20,
+    padding: 10,
+    backgroundColor: "#94451E",
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
 });
