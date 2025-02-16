@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   headerContainer:{
     flex: 1,
-    width: "100%",
+    width: "110%",
     height: 208,
     position: "absolute",
     top: 0,
