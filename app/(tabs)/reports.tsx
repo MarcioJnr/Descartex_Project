@@ -4,16 +4,55 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types";
 import { auth, db } from "../../assets/firebaseConfig";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, getDocs, doc, getDoc } from "firebase/firestore";
 import { WebView } from 'react-native-webview';
 
 type ReportsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reports'>;
 
+const wasteTypes = [
+  { name: "Plástico", color: "#FF3B30", image: require("../../assets/images/vector_plastico.png") },
+  { name: "Papel", color: "#007AFF", image: require("../../assets/images/vector_papel.png") },
+  { name: "Metal", color: "#FFCC00", image: require("../../assets/images/vector_metal.png") },
+  { name: "Vidro", color: "#34C759", image: require("../../assets/images/vector_vidro.png") },
+  { name: "Orgânico", color: "#8E5D3D", image: require("../../assets/images/vector_organico.png") },
+  { name: "Rejeito", color: "#AF52DE", image: require("../../assets/images/vector_rejeito.png") },
+  { name: "Eletrônico", color: "#000000", image: require("../../assets/images/vector_eletronico.png") },
+  { name: "Isopor", color: "#FF2D55", image: require("../../assets/images/vector_isopor.png") }
+];
+
 export default function ReportsScreen() {
   const navigation = useNavigation<ReportsScreenNavigationProp>();
-  const [residues, setResidues] = useState<{ id: string; date: string; type: string; weight: string; checked: boolean }[]>([]); // Estado para armazenar os relatórios
+  const [residues, setResidues] = useState<{ id: string; date: string; type: string; weight: string; photoUrl: string; userId: string; creatorName: string; checked: boolean }[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false); // Estado para controlar a visibilidade da Modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const formatDate = (isoDate: string) => {
+    const date = new Date(isoDate);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} - ${hours}:${minutes}`;
+  };
+
+  const getWasteIcon = (type: string) => {
+    const wasteType = wasteTypes.find(waste => waste.name === type);
+    return wasteType ? wasteType.image : null;
+  };
+
+  const fetchCreatorName = async (userId: string) => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", userId));
+      if (userDoc.exists()) {
+        return userDoc.data().name;
+      }
+      return "Desconhecido";
+    } catch (error) {
+      console.error("Erro ao buscar nome do usuário:", error);
+      return "Desconhecido";
+    }
+  };
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -29,17 +68,21 @@ export default function ReportsScreen() {
         const q = query(collection(db, "reports"));
         const querySnapshot = await getDocs(q);
 
-        const reports: { id: string; date: string; type: string; weight: string; checked: boolean }[] = [];
-        querySnapshot.forEach((doc) => {
+        const reports = [];
+        for (const doc of querySnapshot.docs) {
           const data = doc.data();
+          const creatorName = await fetchCreatorName(data.userId);
           reports.push({
             id: doc.id,
             date: data.date,
             type: data.wasteType,
             weight: data.weight,
+            photoUrl: data.photoUrl,
+            userId: data.userId,
+            creatorName: creatorName,
             checked: false,
           });
-        });
+        }
 
         setResidues(reports);
       } catch (error) {
@@ -53,20 +96,12 @@ export default function ReportsScreen() {
     fetchReports();
   }, []);
 
-  const toggleCheck = (id: string) => {
-    setResidues((prevResidues) =>
-      prevResidues.map((residue) =>
-        residue.id === id ? { ...residue, checked: !residue.checked } : residue
-      )
-    );
-  };
-
   const openForm = () => {
-    setIsModalVisible(true); // Abre a modal
+    setIsModalVisible(true);
   };
 
   const closeModal = () => {
-    setIsModalVisible(false); // Fecha a modal
+    setIsModalVisible(false);
   };
 
   if (loading) {
@@ -80,15 +115,13 @@ export default function ReportsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Cabeçalho */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate('HomePage')}>
           <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
         </TouchableOpacity>
         <Text style={styles.title}>Relatórios</Text>
       </View>
 
-      {/* Filtros */}
       <View style={styles.filters}>
         <TouchableOpacity style={styles.filterButtonResidue}>
           <Text style={styles.filterButtonText}>Todos os resíduos</Text>
@@ -99,43 +132,50 @@ export default function ReportsScreen() {
       </View>
 
       <View>
-      <TouchableOpacity style={styles.exportButton}>
-        <Image source={require('../../assets/images/button_export_reports.png')}/>
+        <TouchableOpacity style={styles.exportButton}>
+          <Image source={require('../../assets/images/button_export_reports.png')}/>
         </TouchableOpacity>
       </View>
 
-      {/* Lista de resíduos */}
       <ScrollView style={styles.residuesList}>
         {residues.map((residue) => (
-          <TouchableOpacity key={residue.id} style={styles.residueItem}>
-            <TouchableOpacity
-              style={styles.checkbox}
-              onPress={() => toggleCheck(residue.id)}
-            >
-              <Text style={styles.checkboxText}>{residue.checked ? "[X]" : "[ ]"}</Text>
-            </TouchableOpacity>
-            <Text style={styles.residueText}>
-              {residue.date} - {residue.type} - {residue.weight}
-            </Text>
+          <TouchableOpacity key={residue.id} style={styles.residueItem}
+            onPress={() => navigation.navigate("ReportDetails", {
+              id: residue.id,
+              date: formatDate(residue.date),
+              type: residue.type,
+              weight: residue.weight,
+              photoUrl: residue.photoUrl,
+              creatorName: residue.creatorName,
+            })}
+          >
+            <Image source={{ uri: residue.photoUrl }} style={styles.residueImage} />
+            <View style={styles.residueInfo}>
+              <View style={styles.residueTypeContainer}>
+                <Image source={getWasteIcon(residue.type)} style={styles.wasteIcon} />
+                <Text style={styles.residueTypeText}>{residue.type}</Text>
+              </View>
+              <Text style={styles.residueText}>Registrado em: {formatDate(residue.date)}</Text>
+              <Text style={styles.residueText}>Colaborador: {residue.creatorName}</Text>
+              <Text style={styles.residueText}>Peso: {residue.weight} g</Text>
+            </View>
           </TouchableOpacity>
         ))}
       </ScrollView>
 
-      {/* Botões de ação */}
       <View style={styles.collectButton}>
         <TouchableOpacity onPress={openForm}>
-        <Image source={require('../../assets/images/button_adc_reciclo.png')}/>
+          <Image source={require('../../assets/images/button_adc_reciclo.png')}/>
         </TouchableOpacity>
       </View>
 
-      {/* Modal com WebView */}
       <Modal visible={isModalVisible} animationType="slide" onRequestClose={closeModal}>
         <WebView
           source={{ uri: 'https://docs.google.com/forms/d/e/1FAIpQLSemQ-b7JKx9ht1rCsC9k1eSJWVAJsYuXbaJa0KdHyMs3kZhLg/viewform?usp=send_form' }}
           style={{ flex: 1 }}
         />
         <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-        <Image source={require('../../assets/images/button_adc_reciclo.png')}/>
+          <Image source={require('../../assets/images/button_adc_reciclo.png')}/>
         </TouchableOpacity>
       </Modal>
     </View>
@@ -170,7 +210,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 37,
   },
-
   filters: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -208,23 +247,39 @@ const styles = StyleSheet.create({
   residueItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#DCDEC4",
+    backgroundColor: "#F1EBDD",
     borderWidth: 1,
     borderColor: "#94451E",
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
   },
-  checkbox: {
+  residueImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 25,
     marginRight: 10,
   },
-  checkboxText: {
-    fontSize: 16,
-    color: "#333",
+  residueInfo: {
+    flex: 1,
+  },
+  residueTypeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  wasteIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
+  },
+  residueTypeText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#94451E",
   },
   residueText: {
     fontSize: 14,
-    fontWeight: "600",
     color: "#94451E",
   },
   exportButton: {

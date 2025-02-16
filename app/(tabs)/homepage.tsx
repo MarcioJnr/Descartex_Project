@@ -197,18 +197,17 @@ export default function HomePage() {
       <Text style={styles.greeting}>
         Olá, <Text style={styles.highlight}>{localUserData?.name || "Usuário"}!</Text>
       </Text>
-      {isAnalista &&
+      {isAnalista ? (
       <Text style={styles.info}>
         Já acumulamos <Text style={styles.highlight}>{reportsData?.totalWaste.toFixed(2) || 0}kg</Text> de resíduos esta semana.
-      </Text>}
-      {!isAnalista &&
+      </Text> ) : (
       <Text style={styles.info}>
         Você fez <Text style={styles.highlight}>{reportsData?.reportCount || 0}</Text> registros de resíduos esta semana.
-      </Text>}
+      </Text>)}
     </View>
 
     <View style={styles.backgroundContainer}>
-      {isAnalista &&
+      {isAnalista ? (
         <View style={styles.evolutionsContainer}>
           <Text style={styles.evolutionsTitle}>EVOLUÇÕES SEMANAIS (KG)</Text>
           <View style={styles.evolutionContent}>
@@ -236,9 +235,7 @@ export default function HomePage() {
               </View>
             </View>
           </View>
-        </View>}
-
-      {!isAnalista &&
+        </View> ) : (
         <View style={styles.evolutionsContainer}>
           <Text style={styles.evolutionsTitle}>REGISTRO SEMANAL (KG)</Text>
           <WeeklyLineChart data={reportsData?.dailyWaste || {}} />
@@ -246,7 +243,7 @@ export default function HomePage() {
           Você já registrou{" "}
           <Text style={styles.highlight}>{reportsData?.totalWaste.toFixed(2) || 0}kg</Text> de resíduos essa semana.
         </Text>
-        </View>}
+        </View>)}
 
       {/* Botões */}
       <View style={styles.buttonsContainer}>
@@ -256,7 +253,7 @@ export default function HomePage() {
         </TouchableOpacity>
 
         {isAnalista &&
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Reports')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Reports', { refresh: false })}>
           <Text style={styles.buttonText}>Relatórios</Text>
           <Image source={require('../../assets/images/icon_report.png')} style={styles.buttonIcon} />
         </TouchableOpacity>}
