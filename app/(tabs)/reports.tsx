@@ -26,7 +26,7 @@ export default function ReportsScreen() {
           return;
         }
 
-        const q = query(collection(db, "reports"), where("userId", "==", user.uid));
+        const q = query(collection(db, "reports"));
         const querySnapshot = await getDocs(q);
 
         const reports: { id: string; date: string; type: string; weight: string; checked: boolean }[] = [];

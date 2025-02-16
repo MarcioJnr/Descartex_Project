@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { createStackNavigator } from "@react-navigation/stack";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../assets/firebaseConfig"; 
 import { RootStackParamList } from "../../types";
@@ -34,11 +33,9 @@ export default function LoginScreen() {
     }
   
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      
-      console.log("Usuário logado:", user.email);
-      navigation.replace("HomePage"); // Navega para a tela principal
+      await signInWithEmailAndPassword(auth, email, password);
+
+      navigation.replace("HomePage"); 
     } catch (error) {
       console.error("Erro ao fazer login:", (error as any).message);
       Alert.alert("Erro","Erro ao fazer login: " + (error as any).message);
