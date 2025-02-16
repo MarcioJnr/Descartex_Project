@@ -7,13 +7,19 @@ import { fetchUserData, UserData } from "../../assets/fetchUserData";
 import { fetchUserReports } from "../../assets/fetchUserReports";
 import { auth, signOut } from "../../assets/firebaseConfig"; // Importe signOut
 import { PieChart } from 'react-native-chart-kit';
+import { LineChart } from 'react-native-chart-kit';
 
 type HomePageNavigationProp = StackNavigationProp<RootStackParamList, 'HomePage'>;
 
 export default function HomePage() {
   const navigation = useNavigation<HomePageNavigationProp>();
   const [localUserData, setLocalUserData] = useState<UserData | null>(null);
-  const [reportsData, setReportsData] = useState<{ totalWaste: number, wasteByType: Record<string, number>, reportCount: number } | null>(null);
+  const [reportsData, setReportsData] = useState<{ 
+    totalWaste: number, 
+    wasteByType: Record<string, number>, 
+    reportCount: number, 
+    dailyWaste: Record<string, number> 
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAnalista, setIsAnalista] = useState(true);
   
@@ -29,6 +35,56 @@ export default function HomePage() {
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
     }
+  };
+
+  const WeeklyLineChart = ({ data }: { data: Record<string, number> }) => {
+    const labels = Object.keys(data);
+    const values = Object.values(data).map(value => {
+      if (typeof value !== 'number' || isNaN(value)) {
+        return 0; // Substitua valores inválidos por 0
+      }
+      return value;
+    });
+  
+    const chartData = {
+      labels: labels,
+      datasets: [
+        {
+          data: values,
+          color: (opacity = 1) => `rgba(148, 69, 30, ${opacity})`,
+          strokeWidth: 2
+        }
+      ],
+    };
+  
+    return (
+      <LineChart
+        data={chartData}
+        width={360}
+        height={200}
+        chartConfig={{
+          backgroundColor: "#ffffff",
+          backgroundGradientFrom: "#ffffff",
+          backgroundGradientTo: "#ffffff",
+          decimalPlaces: 1,
+          color: (opacity = 1) => `rgba(148, 69, 30, ${opacity})`,
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+          style: {
+            borderRadius: 16
+          },
+          propsForDots: {
+            r: "4",
+            strokeWidth: "2",
+            stroke: "#94451E"
+          }
+        }}
+        bezier
+        style={{
+          marginVertical: 8,
+          borderRadius: 16
+        }}
+      />
+    );
   };
 
   const DonutChart = ({ data }: { data: Record<string, number> }) => {
@@ -98,7 +154,7 @@ export default function HomePage() {
         setLocalUserData(userData);
 
         const reports = await fetchUserReports(isAnalista);
-        setReportsData(reports || { totalWaste: 0, wasteByType: {}, reportCount: 0 });
+        setReportsData(reports || { totalWaste: 0, wasteByType: {}, reportCount: 0, dailyWaste: {} });
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -132,30 +188,29 @@ export default function HomePage() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Text style={styles.logoutButtonText}>Sair</Text>
-        </TouchableOpacity>
-        <Text style={styles.greeting}>
-          Olá, <Text style={styles.highlight}>{localUserData?.name || "Usuário"}!</Text>
-        </Text>
-        {isAnalista &&
-        <Text style={styles.info}>
-          Já acumulamos <Text style={styles.highlight}>{reportsData?.totalWaste.toFixed(2) || 0}kg</Text> de resíduos esta semana.
-        </Text>}
-        {!isAnalista &&
-        <Text style={styles.info}>
+  <View style={styles.container}>
+    <View style={styles.headerContainer}>
+      <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+      <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+        <Text style={styles.logoutButtonText}>Sair</Text>
+      </TouchableOpacity>
+      <Text style={styles.greeting}>
+        Olá, <Text style={styles.highlight}>{localUserData?.name || "Usuário"}!</Text>
+      </Text>
+      {isAnalista &&
+      <Text style={styles.info}>
+        Já acumulamos <Text style={styles.highlight}>{reportsData?.totalWaste.toFixed(2) || 0}kg</Text> de resíduos esta semana.
+      </Text>}
+      {!isAnalista &&
+      <Text style={styles.info}>
         Você fez <Text style={styles.highlight}>{reportsData?.reportCount || 0}</Text> registros de resíduos esta semana.
       </Text>}
-      </View>
-  
-      <View style={styles.backgroundContainer}>
+    </View>
+
+    <View style={styles.backgroundContainer}>
       {isAnalista &&
         <View style={styles.evolutionsContainer}>
           <Text style={styles.evolutionsTitle}>EVOLUÇÕES SEMANAIS (KG)</Text>
-          
           <View style={styles.evolutionContent}>
             <View style={styles.residometerContainer}>
               <Image 
@@ -182,23 +237,33 @@ export default function HomePage() {
             </View>
           </View>
         </View>}
-  
-        {/* Botões */}
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NewRegistry')}>
-            <Text style={styles.buttonText}>Novo Registro</Text>
-            <Image source={require('../../assets/images/icon_cam.png')} style={styles.buttonIcon} />
-          </TouchableOpacity>
-  
-          {isAnalista &&
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Reports')}>
-            <Text style={styles.buttonText}>Relatórios</Text>
-            <Image source={require('../../assets/images/icon_report.png')} style={styles.buttonIcon} />
-          </TouchableOpacity>}
-        </View>
+
+      {!isAnalista &&
+        <View style={styles.evolutionsContainer}>
+          <Text style={styles.evolutionsTitle}>REGISTRO SEMANAL (KG)</Text>
+          <WeeklyLineChart data={reportsData?.dailyWaste || {}} />
+          <Text style={styles.totalWasteText}>
+          Você já registrou{" "}
+          <Text style={styles.highlight}>{reportsData?.totalWaste.toFixed(2) || 0}kg</Text> de resíduos essa semana.
+        </Text>
+        </View>}
+
+      {/* Botões */}
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NewRegistry')}>
+          <Text style={styles.buttonText}>Novo Registro</Text>
+          <Image source={require('../../assets/images/icon_cam.png')} style={styles.buttonIcon} />
+        </TouchableOpacity>
+
+        {isAnalista &&
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Reports')}>
+          <Text style={styles.buttonText}>Relatórios</Text>
+          <Image source={require('../../assets/images/icon_report.png')} style={styles.buttonIcon} />
+        </TouchableOpacity>}
       </View>
     </View>
-  );
+  </View>
+);
 }
 
 const styles = StyleSheet.create({
@@ -260,6 +325,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
+  },
+  totalWasteText: {
+    fontSize: 13,
+    color: "#94451E",
+    textAlign: "center",
+    marginTop: 5,
   },
   residometerContainer: {
     flexDirection: "column",
