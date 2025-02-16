@@ -7,14 +7,13 @@ import { fetchUserData, UserData } from "../../assets/fetchUserData";
 import { fetchUserReports } from "../../assets/fetchUserReports";
 import { auth } from "../../assets/firebaseConfig";
 import { PieChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
 
 type HomePageNavigationProp = StackNavigationProp<RootStackParamList, 'HomePage'>;
 
 export default function HomePage() {
   const navigation = useNavigation<HomePageNavigationProp>();
   const [localUserData, setLocalUserData] = useState<UserData | null>(null);
-  const [reportsData, setReportsData] = useState<{ totalWaste: number, wasteByType: Record<string, number> } | null>(null);
+  const [reportsData, setReportsData] = useState<{ totalWaste: number, wasteByType: Record<string, number>, reportCount: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAnalista, setIsAnalista] = useState(true);
   
@@ -129,9 +128,14 @@ useEffect(() => {
         <Text style={styles.greeting}>
           Olá, <Text style={styles.highlight}>{localUserData?.name || "Usuário"}!</Text>
         </Text>
+        {isAnalista &&
         <Text style={styles.info}>
           Já acumulamos <Text style={styles.highlight}>{reportsData?.totalWaste || 0}kg</Text> de resíduos esta semana.
-        </Text>
+        </Text>}
+        {!isAnalista &&
+        <Text style={styles.info}>
+        Você fez <Text style={styles.highlight}>{reportsData?.reportCount || 0}</Text> registros de resíduos esta semana.
+      </Text>}
       </View>
   
       <View style={styles.backgroundContainer}>
