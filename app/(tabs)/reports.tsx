@@ -6,6 +6,11 @@ import { RootStackParamList } from "../../types";
 import { auth, db } from "../../assets/firebaseConfig";
 import { collection, query, getDocs, doc, getDoc } from "firebase/firestore";
 import { WebView } from 'react-native-webview';
+import * as Print from 'expo-print';
+import * as FileSystem from 'expo-file-system';
+import { shareAsync } from 'expo-sharing';
+import * as MailComposer from 'expo-mail-composer';
+import { fetchUserData, UserData } from "../../assets/fetchUserData";
 
 type ReportsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reports'>;
 
@@ -104,17 +109,118 @@ export default function ReportsScreen() {
     setIsModalVisible(false);
   };
 
+  const generatePdf = async () => {
+    try {
+      setLoading(true); 
+  
+      const userData = await fetchUserData();
+      const userEmail = userData?.email;
+      console.log("E-mail do usuário:", userEmail);
+  
+      if (!userEmail) {
+        Alert.alert("Erro", "Não foi possível obter o e-mail do usuário.");
+        return;
+      }
+  
+      const canSendMail = await MailComposer.isAvailableAsync();
+      console.log("E-mail disponível?", canSendMail);
+  
+      if (!canSendMail) {
+        Alert.alert("Erro", "Nenhum cliente de e-mail configurado.");
+        return;
+      }
+  
+      const htmlContent = `
+        <html>
+          <head>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 20px; }
+              h1 { color: #94451E; text-align: center; }
+              .report { 
+                margin-bottom: 20px; 
+                padding: 15px; 
+                border: 1px solid #94451E; 
+                border-radius: 10px; 
+                background-color: #F1EBDD; 
+                display: flex; 
+                align-items: center; 
+              }
+              .report img { 
+                width: 150px; 
+                height: 150px; 
+                border-radius: 10px; 
+                margin-right: 20px; 
+              }
+              .report h2 { font-size: 20px; color: #94451E; margin: 0; }
+              .report p { font-size: 16px; color: #94451E; margin: 5px 0; }
+            </style>
+          </head>
+          <body>
+            <h1>Relatórios de Resíduos</h1>
+            ${residues.map(residue => `
+              <div class="report">
+                <img src="${residue.photoUrl}" alt="${residue.type}" />
+                <div>
+                  <h2>${residue.type}</h2>
+                  <p><strong>Data:</strong> ${formatDate(residue.date)}</p>
+                  <p><strong>Colaborador:</strong> ${residue.creatorName}</p>
+                  <p><strong>Peso:</strong> ${residue.weight} g</p>
+                </div>
+              </div>
+            `).join('')}
+          </body>
+        </html>
+      `;
+  
+      const { uri } = await Print.printToFileAsync({
+        html: htmlContent,
+      });
+  
+      const pdfName = `${FileSystem.documentDirectory}relatorios.pdf`;
+      await FileSystem.moveAsync({
+        from: uri,
+        to: pdfName,
+      });
+  
+      console.log("Caminho do PDF:", pdfName);
+  
+      // Compartilhar o PDF
+      await shareAsync(pdfName, { UTI: '.pdf', mimeType: 'application/pdf' });
+  
+      // Enviar o PDF por e-mail
+      await MailComposer.composeAsync({
+        recipients: [userEmail], 
+        subject: 'Relatórios de Resíduos',
+        body: 'Segue em anexo o relatório de resíduos.',
+        attachments: [pdfName],
+      });
+  
+      console.log('PDF gerado, compartilhado e enviado por e-mail com sucesso!');
+    } catch (error) {
+      console.error('Erro ao gerar PDF:', error);
+      Alert.alert("Erro", "Ocorreu um erro ao gerar o PDF.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#497E13" />
-        <Text>Carregando relatórios...</Text>
+        <Text>Carregando...</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
+      {loading && (
+      <View style={styles.loadingOverlay}>
+        <ActivityIndicator size="large" color="#497E13" />
+        <Text style={styles.loadingText}>Gerando PDF...</Text>
+      </View>
+    )}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('HomePage')}>
           <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
@@ -132,7 +238,7 @@ export default function ReportsScreen() {
       </View>
 
       <View>
-        <TouchableOpacity style={styles.exportButton}>
+        <TouchableOpacity style={styles.exportButton} onPress={generatePdf}>
           <Image source={require('../../assets/images/button_export_reports.png')}/>
         </TouchableOpacity>
       </View>
@@ -304,4 +410,20 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
   },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    zIndex: 999,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#497E13',
+  }
 });
