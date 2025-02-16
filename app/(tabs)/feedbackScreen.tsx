@@ -14,12 +14,12 @@ const FeedbackScreen = () => {
       <View style={styles.card}>
         <Text style={styles.title}>Resíduo Registrado com Sucesso!</Text>
         
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('NewRegistry')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.replace('NewRegistry')}>
           <Image source={require("./../../assets/images/icon_cam.png")} style={styles.icon} />
           <Text style={styles.buttonText}>Novo Registro</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HomePage')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.replace('HomePage')}>
           <Image source={require("./../../assets/images/icon_home.png")} style={styles.icon} />
           <Text style={styles.buttonText}>Voltar para a página inicial</Text>
         </TouchableOpacity>

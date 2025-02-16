@@ -12,6 +12,7 @@ import NewRegistryScreen from "./(tabs)/newregistry";
 import Reports from "./(tabs)/reports";
 import { RootStackParamList } from "../types";
 import feedbackScreen from "./(tabs)/feedbackScreen";
+import ReportDetailsScreen  from "./(tabs)/reportdetailsScreen";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -34,6 +35,7 @@ const AppLayout = () => {
         />
         <Stack.Screen name="NewRegistry" component={NewRegistryScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Reports" component={Reports} options={{ headerShown: false }} />
+        <Stack.Screen name="ReportDetails" component={ReportDetailsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="FeedbackScreen" component={feedbackScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </ThemeProvider>

@@ -116,7 +116,7 @@ export default function ReportsScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.navigate('HomePage')}>
           <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
         </TouchableOpacity>
         <Text style={styles.title}>Relatórios</Text>
@@ -139,7 +139,16 @@ export default function ReportsScreen() {
 
       <ScrollView style={styles.residuesList}>
         {residues.map((residue) => (
-          <TouchableOpacity key={residue.id} style={styles.residueItem}>
+          <TouchableOpacity key={residue.id} style={styles.residueItem}
+            onPress={() => navigation.navigate("ReportDetails", {
+              id: residue.id,
+              date: formatDate(residue.date),
+              type: residue.type,
+              weight: residue.weight,
+              photoUrl: residue.photoUrl,
+              creatorName: residue.creatorName,
+            })}
+          >
             <Image source={{ uri: residue.photoUrl }} style={styles.residueImage} />
             <View style={styles.residueInfo}>
               <View style={styles.residueTypeContainer}>
