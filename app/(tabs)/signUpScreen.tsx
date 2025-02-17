@@ -67,8 +67,8 @@ export default function SignUpScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-    <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
+      <StatusBar backgroundColor="#DCDEC4" translucent={false} barStyle="dark-content" />
     <View style={styles.container}>
       <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
       <View style={styles.form}>

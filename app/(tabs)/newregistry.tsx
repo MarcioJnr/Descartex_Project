@@ -4,7 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
 import { SafeAreaView } from 'react-native';
-
+import { StatusBar } from 'react-native';
 
 type NewRegistryNavigationProp = StackNavigationProp<RootStackParamList, 'NewRegistry'>;
 
@@ -28,8 +28,9 @@ export default function NewRegistry() {
 
 
    return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-    <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
+      <StatusBar backgroundColor="#EBD0B5" translucent={false} barStyle="dark-content" />
+      <View style={styles.container}>
 
       <View style={styles.headerContainer}>
         {/* Botão de voltar */}
