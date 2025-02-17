@@ -8,6 +8,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types"; 
 import { RouteProp } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native';
 
 type CameraScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CameraScreen'>;
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'CameraScreen'>;
@@ -111,6 +112,7 @@ export default function CameraScreen({ route }: Props) {
   
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
@@ -142,6 +144,7 @@ export default function CameraScreen({ route }: Props) {
         </View>
       )}
     </View>
+    </SafeAreaView>
   );
 }
 

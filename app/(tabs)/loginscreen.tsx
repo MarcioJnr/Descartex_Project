@@ -13,6 +13,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../assets/firebaseConfig"; 
 import { RootStackParamList } from "../../types";
+import { SafeAreaView } from 'react-native';
 
 
 export default function LoginScreen() {
@@ -54,6 +55,7 @@ export default function LoginScreen() {
 
 
   return (
+  <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       {/* Logo */}
       
@@ -103,6 +105,8 @@ export default function LoginScreen() {
         </View>
 
     </View>
+  
+  </SafeAreaView>
   );
 }
 

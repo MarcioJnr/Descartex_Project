@@ -12,6 +12,8 @@ import { shareAsync } from 'expo-sharing';
 import * as MailComposer from 'expo-mail-composer';
 import { fetchUserData, UserData } from "../../assets/fetchUserData";
 import { Calendar } from 'react-native-calendars';
+import { SafeAreaView } from 'react-native';
+
 
 type ReportsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reports'>;
 
@@ -247,6 +249,7 @@ export default function ReportsScreen() {
   }
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       {loading && (
         <View style={styles.loadingOverlay}>
@@ -357,6 +360,7 @@ export default function ReportsScreen() {
         </View>
       </Modal>
     </View>
+    </SafeAreaView>
   );
 }
 

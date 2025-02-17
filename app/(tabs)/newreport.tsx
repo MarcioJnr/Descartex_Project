@@ -5,6 +5,8 @@ import { RootStackParamList } from "../../types";
 import { auth, db, storage } from "../../assets/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { SafeAreaView } from 'react-native';
+
 
 type Props = StackScreenProps<RootStackParamList, "NewReport">;
 
@@ -70,6 +72,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       <Text style={styles.title}>Confirmar?</Text>
       <View style={styles.card}>
@@ -88,6 +91,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
         <Text style={styles.cancelButtonText}>Não, tirar outra foto</Text>
       </TouchableOpacity>
     </View>
+    </SafeAreaView>
   );
 };
 
