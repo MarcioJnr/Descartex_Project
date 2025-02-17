@@ -4,12 +4,14 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 
 const FeedbackScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-    <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
+      <StatusBar backgroundColor="#DCDEC4" translucent={false} barStyle="dark-content" />
+      <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.title}>Resíduo Registrado com Sucesso!</Text>
         

@@ -7,6 +7,7 @@ import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../assets/firebaseConfig";
 import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 
 type ReportDetailsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ReportDetails'>;
 
@@ -78,8 +79,9 @@ export default function ReportDetailsScreen() {
   const wasteType = wasteTypes.find(w => w.name === newType) || wasteTypes[0];
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-    <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
+      <StatusBar backgroundColor="#DCDEC4" translucent={false} barStyle="dark-content" />
+      <View style={styles.container}>
 
       <View style={styles.containerDetails}>
       <TouchableOpacity onPress={() => navigation.navigate("Reports", { refresh: true })} style={styles.backButton}>
