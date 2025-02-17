@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    width: "100%",
+    width: "111%",
     height: 208,
     position: "absolute",
     top: 0,

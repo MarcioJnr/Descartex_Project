@@ -117,13 +117,14 @@ const styles = StyleSheet.create({
   },
 
   bottomLayout: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: "#EBD0B5",
     alignItems: "center",
     width: "100%",
+    height: 126,
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,
-    marginTop: 80,
+    marginTop: "auto",
   },
 
   logo: {
@@ -202,11 +203,11 @@ const styles = StyleSheet.create({
   createAccount: {
     color: "#94451E",
     width: "100%",
-    marginTop: 25,
+    marginBottom: 2,
     textDecorationLine: "underline",
     padding: 10,
-    borderRadius: 50,
     textAlign: "center",
+    marginTop: 45,
     //width: "100%",
   },
 })

@@ -31,27 +31,29 @@ const FeedbackScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#D9D9B2",
+    backgroundColor: "#DCDEC4",
     justifyContent: "center",
     alignItems: "center",
     
   },
   card: {
-    backgroundColor: "#E7C2A0",
+    backgroundColor: "#EBD0B5",
     padding: 20,
+    borderWidth: 1,
+    borderColor: "#94451E",
     borderRadius: 15,
     alignItems: "center",
-    width: "80%",
-    height: "80%",
+    width: 340,
+    height: 612,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3
   },
   title: {
-    fontSize: 18,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#723B19",
+    color: "#94451E",
     textAlign: "center",
     marginTop: 40,
     marginBottom: 80
