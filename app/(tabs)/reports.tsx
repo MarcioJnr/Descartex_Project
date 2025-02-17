@@ -12,6 +12,7 @@ import { shareAsync } from 'expo-sharing';
 import * as MailComposer from 'expo-mail-composer';
 import { fetchUserData, UserData } from "../../assets/fetchUserData";
 import { Calendar } from 'react-native-calendars';
+import { SafeAreaView } from 'react-native';
 
 type ReportsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reports'>;
 
@@ -247,6 +248,7 @@ export default function ReportsScreen() {
   }
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       {loading && (
         <View style={styles.loadingOverlay}>
@@ -323,8 +325,8 @@ export default function ReportsScreen() {
           style={{ flex: 1 }}
         />
         <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-          <Image source={require('../../assets/images/button_adc_reciclo.png')} />
-        </TouchableOpacity>
+            <Text style={styles.closeButtonText}>Fechar</Text>
+          </TouchableOpacity>
       </Modal>
 
       <Modal visible={isPeriodModalVisible} animationType="slide" onRequestClose={() => setIsPeriodModalVisible(false)}>
@@ -357,6 +359,7 @@ export default function ReportsScreen() {
         </View>
       </Modal>
     </View>
+    </SafeAreaView>
   );
 }
 
@@ -483,6 +486,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     alignSelf: "center",
+    padding: 10,
+    backgroundColor: "#9B111E",
+    borderRadius: 5,
   },
   closeButtonText: {
     color: '#FFF',

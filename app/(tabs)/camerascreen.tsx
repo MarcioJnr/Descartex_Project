@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { Button, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Image } from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Image, Alert } from "react-native";
 import * as ImageManipulator from 'expo-image-manipulator';
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from 'expo-file-system';
@@ -8,6 +8,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types"; 
 import { RouteProp } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native';
 
 type CameraScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CameraScreen'>;
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'CameraScreen'>;
@@ -56,10 +57,10 @@ export default function CameraScreen({ route }: Props) {
             date: currentDate.toISOString(),
           });
         } else {
-          console.error("Erro: Nenhum texto detectado.");
+          Alert.alert("Erro: Nenhum texto detectado.");
         }
       } else {
-        console.error("Erro: URI da foto não encontrado.");
+        Alert.alert("Erro: URI da foto não encontrado.");
       }
     }
   };
@@ -104,13 +105,14 @@ export default function CameraScreen({ route }: Props) {
   
       return parseInt(numbers.join('').slice(0, 4), 10).toString();
     } catch (error) {
-      console.error("Erro ao realizar OCR:", error);
+      Alert.alert("Erro ao realizar leitura:", String(error));
       return null;
     }
   };
   
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
@@ -142,6 +144,7 @@ export default function CameraScreen({ route }: Props) {
         </View>
       )}
     </View>
+    </SafeAreaView>
   );
 }
 

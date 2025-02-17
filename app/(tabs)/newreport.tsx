@@ -5,6 +5,8 @@ import { RootStackParamList } from "../../types";
 import { auth, db, storage } from "../../assets/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { SafeAreaView } from 'react-native';
+
 
 type Props = StackScreenProps<RootStackParamList, "NewReport">;
 
@@ -70,6 +72,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       <Text style={styles.title}>Confirmar?</Text>
       <View style={styles.card}>
@@ -77,17 +80,31 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
         <View style={styles.wasteTypeContainer}>
           <Image source={selectedWasteType?.image} style={styles.wasteTypeImage} />
           <Text style={styles.wasteTypeText}>{wastetype}</Text>
+          { text !== "Nenhum número detectado." ? (
           <Text style={styles.weightText}>{text}g</Text>
+          ) : (
+          <Text style={styles.weightText}>{text}</Text>
+          )}
         </View>
         <Image source={{ uri: photo }} style={styles.image} />
       </View>
-      <TouchableOpacity style={styles.confirmButton} onPress={saveReportToFirebase}>
-        <Text style={styles.confirmButtonText}>Confirmar</Text>
-      </TouchableOpacity>
+      { text !== "Nenhum número detectado." ? (
+        <>
+          <TouchableOpacity style={styles.confirmButton} onPress={saveReportToFirebase}>
+            <Text style={styles.confirmButtonText}>Confirmar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.cancelButtonText}>Não, tirar outra foto</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.cancelButtonText}>Não, tirar outra foto</Text>
+        <Text style={styles.cancelButtonText}>Tirar outra foto</Text>
       </TouchableOpacity>
+      )}
     </View>
+    </SafeAreaView>
   );
 };
 

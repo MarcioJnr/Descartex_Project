@@ -24,19 +24,19 @@ const AppLayout = () => {
     <ThemeProvider theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       {/* Remova o NavigationContainer daqui */}
       <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false }} />
-        <Stack.Screen name="CameraScreen" component={CameraScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false, headerTransparent: true }} />
+        <Stack.Screen name="HomePage" component={HomePage} options={{ headerShown: false, headerTransparent: true }} />
+        <Stack.Screen name="CameraScreen" component={CameraScreen} options={{ headerShown: false, headerTransparent: true }} />
+        <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: false, headerTransparent: true }} />
         <Stack.Screen
           name="NewReport"
           component={NewReportScreen}
-          options={{ headerShown: false }}
+          options={{ headerShown: false, headerTransparent: true }}
         />
-        <Stack.Screen name="NewRegistry" component={NewRegistryScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Reports" component={Reports} options={{ headerShown: false }} />
-        <Stack.Screen name="ReportDetails" component={ReportDetailsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="FeedbackScreen" component={feedbackScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="NewRegistry" component={NewRegistryScreen} options={{ headerShown: false, headerTransparent: true }} />
+        <Stack.Screen name="Reports" component={Reports} options={{ headerShown: false, headerTransparent: true }} />
+        <Stack.Screen name="ReportDetails" component={ReportDetailsScreen} options={{ headerShown: false, headerTransparent: true }} />
+        <Stack.Screen name="FeedbackScreen" component={feedbackScreen} options={{ headerShown: false, headerTransparent: true }} />
       </Stack.Navigator>
     </ThemeProvider>
   );

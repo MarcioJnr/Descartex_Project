@@ -3,10 +3,12 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { SafeAreaView } from 'react-native';
 
 const FeedbackScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.title}>Resíduo Registrado com Sucesso!</Text>
@@ -22,6 +24,7 @@ const FeedbackScreen = () => {
         </TouchableOpacity>
       </View>
     </View>
+    </SafeAreaView>
   );
 };
 

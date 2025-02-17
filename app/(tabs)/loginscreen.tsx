@@ -13,6 +13,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../assets/firebaseConfig"; 
 import { RootStackParamList } from "../../types";
+import { SafeAreaView } from 'react-native';
 
 
 export default function LoginScreen() {
@@ -37,7 +38,6 @@ export default function LoginScreen() {
 
       navigation.replace("HomePage"); 
     } catch (error) {
-      console.error("Erro ao fazer login:", (error as any).message);
       Alert.alert("Erro","Erro ao fazer login: " + (error as any).message);
     }
   };
@@ -48,12 +48,12 @@ export default function LoginScreen() {
 
   function SignIn() {
     signInWithEmailAndPassword(auth, email, password)
-    .catch(error => alert(error.message));
-    //Lembrar de informar o erro ao usuário de forma mais amigável
+    .catch(error => Alert.alert(error.message));
   }
 
 
   return (
+  <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       {/* Logo */}
       
@@ -103,6 +103,8 @@ export default function LoginScreen() {
         </View>
 
     </View>
+  
+  </SafeAreaView>
   );
 }
 
