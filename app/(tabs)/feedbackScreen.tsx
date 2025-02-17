@@ -4,9 +4,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-
-
-
 const FeedbackScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
@@ -15,13 +12,13 @@ const FeedbackScreen = () => {
         <Text style={styles.title}>Resíduo Registrado com Sucesso!</Text>
         
         <TouchableOpacity style={styles.button} onPress={() => navigation.replace('NewRegistry')}>
-          <Image source={require("./../../assets/images/icon_cam.png")} style={styles.icon} />
           <Text style={styles.buttonText}>Novo Registro</Text>
+          <Image source={require("./../../assets/images/icon_cam.png")} style={styles.icon} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.replace('HomePage')}>
-          <Image source={require("./../../assets/images/icon_home.png")} style={styles.icon} />
           <Text style={styles.buttonText}>Voltar para a página inicial</Text>
+          <Image source={require("./../../assets/images/icon_home.png")} style={styles.icon} />
         </TouchableOpacity>
       </View>
     </View>
@@ -42,15 +39,19 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "center",
     width: "80%",
-    borderWidth: 2,
-    borderColor: "#2186C4",
+    height: "80%",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#723B19",
     textAlign: "center",
-    marginBottom: 20,
+    marginTop: 40,
+    marginBottom: 80
   },
   button: {
     flexDirection: "column",
@@ -59,10 +60,15 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "#94451E",
     padding: 15,
+    margin: 10,
     borderRadius: 10,
-    width: 114,
-    height: 107,
+    width: 115,
+    height: 115,
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3
   },
   buttonText: {
     color: "#94451E",

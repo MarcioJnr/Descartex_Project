@@ -60,7 +60,7 @@ export default function HomePage() {
     return (
       <LineChart
         data={chartData}
-        width={360}
+        width={340}
         height={200}
         chartConfig={{
           backgroundColor: "#ffffff",
