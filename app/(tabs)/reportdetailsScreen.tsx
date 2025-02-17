@@ -105,6 +105,7 @@ export default function ReportDetailsScreen() {
         keyboardType="numeric"
         value={newWeight}
         onChangeText={(text) => setNewWeight(text.replace(/[^0-9.]/g, ""))}
+        maxLength={4}
         />      
       ) : (
         <Text style={styles.infoText}>{newWeight} kg</Text>

@@ -11,6 +11,7 @@ import * as FileSystem from 'expo-file-system';
 import { shareAsync } from 'expo-sharing';
 import * as MailComposer from 'expo-mail-composer';
 import { fetchUserData, UserData } from "../../assets/fetchUserData";
+import { Calendar } from 'react-native-calendars';
 
 type ReportsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reports'>;
 
@@ -30,6 +31,10 @@ export default function ReportsScreen() {
   const [residues, setResidues] = useState<{ id: string; date: string; type: string; weight: string; photoUrl: string; userId: string; creatorName: string; checked: boolean }[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isPeriodModalVisible, setIsPeriodModalVisible] = useState(false);
+  const [isWasteTypeModalVisible, setIsWasteTypeModalVisible] = useState(false);
+  const [selectedWasteType, setSelectedWasteType] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const formatDate = (isoDate: string) => {
     const date = new Date(isoDate);
@@ -59,47 +64,65 @@ export default function ReportsScreen() {
     }
   };
 
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const user = auth.currentUser;
+  const fetchReports = async () => {
+    try {
+      const user = auth.currentUser;
 
-        if (!user) {
-          console.log("Usuário não autenticado.");
-          navigation.navigate("Login");
-          return;
-        }
-
-        const q = query(collection(db, "reports"));
-        const querySnapshot = await getDocs(q);
-
-        const reports = [];
-        for (const doc of querySnapshot.docs) {
-          const data = doc.data();
-          const creatorName = await fetchCreatorName(data.userId);
-          reports.push({
-            id: doc.id,
-            date: data.date,
-            type: data.wasteType,
-            weight: data.weight,
-            photoUrl: data.photoUrl,
-            userId: data.userId,
-            creatorName: creatorName,
-            checked: false,
-          });
-        }
-
-        setResidues(reports);
-      } catch (error) {
-        console.error("Erro ao buscar relatórios:", error);
-        Alert.alert("Erro", "Ocorreu um erro ao buscar os relatórios.");
-      } finally {
-        setLoading(false);
+      if (!user) {
+        console.log("Usuário não autenticado.");
+        navigation.navigate("Login");
+        return;
       }
-    };
 
+      const q = query(collection(db, "reports"));
+      const querySnapshot = await getDocs(q);
+
+      const reports = [];
+      for (const doc of querySnapshot.docs) {
+        const data = doc.data();
+        const creatorName = await fetchCreatorName(data.userId);
+
+        // Aplicar filtro de tipo de resíduo
+        if (selectedWasteType && data.wasteType !== selectedWasteType) {
+          continue;
+        }
+
+        // Aplicar filtro de data
+        const reportDate = new Date(data.date);
+        if (selectedDate) {
+          // Comparar apenas o dia, mês e ano, ignorando horas, minutos e fuso horário
+          const selectedDateStart = new Date(selectedDate);
+          selectedDateStart.setHours(0, 0, 0, 0); // Define para o início do dia selecionado
+
+          if (reportDate < selectedDateStart) {
+            continue;
+          }
+        }
+
+        reports.push({
+          id: doc.id,
+          date: data.date,
+          type: data.wasteType,
+          weight: data.weight,
+          photoUrl: data.photoUrl,
+          userId: data.userId,
+          creatorName: creatorName,
+          checked: false,
+        });
+      }
+
+      setResidues(reports);
+    } catch (error) {
+      console.error("Erro ao buscar relatórios:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao buscar os relatórios.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchReports();
-  }, []);
+  }, [selectedWasteType, selectedDate]);
 
   const openForm = () => {
     setIsModalVisible(true);
@@ -109,27 +132,37 @@ export default function ReportsScreen() {
     setIsModalVisible(false);
   };
 
+  const handleWasteTypeFilter = (type: string | null) => {
+    setSelectedWasteType(type);
+    setIsWasteTypeModalVisible(false);
+  };
+
+  const handleDateFilter = (date: Date | null) => {
+    setSelectedDate(date);
+    setIsPeriodModalVisible(false);
+  };
+
   const generatePdf = async () => {
     try {
-      setLoading(true); 
-  
+      setLoading(true);
+
       const userData = await fetchUserData();
       const userEmail = userData?.email;
       console.log("E-mail do usuário:", userEmail);
-  
+
       if (!userEmail) {
         Alert.alert("Erro", "Não foi possível obter o e-mail do usuário.");
         return;
       }
-  
+
       const canSendMail = await MailComposer.isAvailableAsync();
       console.log("E-mail disponível?", canSendMail);
-  
+
       if (!canSendMail) {
         Alert.alert("Erro", "Nenhum cliente de e-mail configurado.");
         return;
       }
-  
+
       const htmlContent = `
         <html>
           <head>
@@ -171,30 +204,30 @@ export default function ReportsScreen() {
           </body>
         </html>
       `;
-  
+
       const { uri } = await Print.printToFileAsync({
         html: htmlContent,
       });
-  
+
       const pdfName = `${FileSystem.documentDirectory}relatorios.pdf`;
       await FileSystem.moveAsync({
         from: uri,
         to: pdfName,
       });
-  
+
       console.log("Caminho do PDF:", pdfName);
-  
+
       // Compartilhar o PDF
       await shareAsync(pdfName, { UTI: '.pdf', mimeType: 'application/pdf' });
-  
+
       // Enviar o PDF por e-mail
       await MailComposer.composeAsync({
-        recipients: [userEmail], 
+        recipients: [userEmail],
         subject: 'Relatórios de Resíduos',
         body: 'Segue em anexo o relatório de resíduos.',
         attachments: [pdfName],
       });
-  
+
       console.log('PDF gerado, compartilhado e enviado por e-mail com sucesso!');
     } catch (error) {
       console.error('Erro ao gerar PDF:', error);
@@ -216,11 +249,11 @@ export default function ReportsScreen() {
   return (
     <View style={styles.container}>
       {loading && (
-      <View style={styles.loadingOverlay}>
-        <ActivityIndicator size="large" color="#497E13" />
-        <Text style={styles.loadingText}>Gerando PDF...</Text>
-      </View>
-    )}
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#497E13" />
+          <Text style={styles.loadingText}>Gerando PDF...</Text>
+        </View>
+      )}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('HomePage')}>
           <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
@@ -228,18 +261,27 @@ export default function ReportsScreen() {
         <Text style={styles.title}>Relatórios</Text>
       </View>
 
-      <View style={styles.filters}>
-        <TouchableOpacity style={styles.filterButtonResidue}>
-          <Text style={styles.filterButtonText}>Todos os resíduos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterButtonPeriod}>
-          <Text style={styles.filterButtonText}>Período</Text>
+      <View style={styles.filtersContainer}>
+        <View style={styles.filtersRow}>
+          <TouchableOpacity style={styles.filterButton} onPress={() => setIsWasteTypeModalVisible(true)}>
+            <Text style={styles.filterButtonText}>
+              {selectedWasteType || "Todos os resíduos"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.filterButton} onPress={() => setIsPeriodModalVisible(true)}>
+            <Text style={styles.filterButtonText}>
+              {selectedDate ? selectedDate.toLocaleDateString('pt-BR') : "Período"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.resetButton} onPress={() => { setSelectedWasteType(null); setSelectedDate(null); }}>
+          <Text style={styles.resetButtonText}>Limpar Filtros</Text>
         </TouchableOpacity>
       </View>
 
       <View>
         <TouchableOpacity style={styles.exportButton} onPress={generatePdf}>
-          <Image source={require('../../assets/images/button_export_reports.png')}/>
+          <Image source={require('../../assets/images/button_export_reports.png')} />
         </TouchableOpacity>
       </View>
 
@@ -263,7 +305,7 @@ export default function ReportsScreen() {
               </View>
               <Text style={styles.residueText}>Registrado em: {formatDate(residue.date)}</Text>
               <Text style={styles.residueText}>Colaborador: {residue.creatorName}</Text>
-              <Text style={styles.residueText}>Peso: {residue.weight} g</Text>
+              <Text style={styles.residueText}>Peso: {residue.weight} Kg</Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -271,7 +313,7 @@ export default function ReportsScreen() {
 
       <View style={styles.collectButton}>
         <TouchableOpacity onPress={openForm}>
-          <Image source={require('../../assets/images/button_adc_reciclo.png')}/>
+          <Image source={require('../../assets/images/button_adc_reciclo.png')} />
         </TouchableOpacity>
       </View>
 
@@ -281,8 +323,38 @@ export default function ReportsScreen() {
           style={{ flex: 1 }}
         />
         <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-          <Image source={require('../../assets/images/button_adc_reciclo.png')}/>
+          <Image source={require('../../assets/images/button_adc_reciclo.png')} />
         </TouchableOpacity>
+      </Modal>
+
+      <Modal visible={isPeriodModalVisible} animationType="slide" onRequestClose={() => setIsPeriodModalVisible(false)}>
+        <View style={styles.periodModal}>
+          <Calendar
+            onDayPress={(day: { dateString: string }) => {
+              const selectedDate = new Date(`${day.dateString}T00:00:00`); 
+              setSelectedDate(selectedDate);
+            }}
+            markedDates={{
+              [selectedDate ? selectedDate.toISOString().split('T')[0] : '']: { selected: true, selectedColor: '#497E13' },
+            }}
+          />
+          <TouchableOpacity onPress={() => handleDateFilter(selectedDate)} style={styles.applyButton}>
+            <Text style={styles.applyButtonText}>Aplicar</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+
+      <Modal visible={isWasteTypeModalVisible} animationType="slide" onRequestClose={() => setIsWasteTypeModalVisible(false)}>
+        <View style={styles.wasteTypeModal}>
+          {wasteTypes.map((waste) => (
+            <TouchableOpacity key={waste.name} onPress={() => handleWasteTypeFilter(waste.name)} style={styles.wasteTypeOption}>
+              <Text style={styles.wasteTypeText}>{waste.name}</Text>
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity onPress={() => handleWasteTypeFilter(null)} style={styles.wasteTypeOption}>
+            <Text style={styles.wasteTypeText}>Todos os resíduos</Text>
+          </TouchableOpacity>
+        </View>
       </Modal>
     </View>
   );
@@ -316,35 +388,41 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 37,
   },
-  filters: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  filtersContainer: {
     marginTop: 210,
     marginBottom: 20,
   },
-  filterButtonResidue: {
-    backgroundColor: "#F1EBDD",
-    justifyContent: "center",
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "#94451E",
-    width: 239,
-    height: 29,
-    alignItems: "center",
+  filtersRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
-  filterButtonPeriod: {
+  filterButton: {
     backgroundColor: "#F1EBDD",
     justifyContent: "center",
     borderRadius: 5,
     borderWidth: 1,
     borderColor: "#94451E",
-    width: 104,
-    height: 29,
+    padding: 10,
+    width: "48%", // Ajuste para caber dois botões na mesma linha
     alignItems: "center",
   },
   filterButtonText: {
     fontSize: 14,
     color: "#333",
+  },
+  resetButton: {
+    backgroundColor: "#F1EBDD",
+    justifyContent: "center",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#94451E",
+    padding: 10,
+    alignItems: "center",
+  },
+  resetButtonText: {
+    fontSize: 14,
+    color: "#94451E",
   },
   residuesList: {
     flex: 1,
@@ -425,5 +503,40 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: '#497E13',
-  }
+  },
+  periodModal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    padding: 20,
+  },
+  applyButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#497E13',
+    borderRadius: 5,
+  },
+  applyButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+  },
+  wasteTypeModal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    padding: 20,
+  },
+  wasteTypeOption: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#CCC',
+    width: '100%',
+    alignItems: 'center',
+  },
+  wasteTypeText: {
+    fontSize: 16,
+    color: '#94451E',
+  },
 });
