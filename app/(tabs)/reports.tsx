@@ -14,7 +14,6 @@ import { fetchUserData, UserData } from "../../assets/fetchUserData";
 import { Calendar } from 'react-native-calendars';
 import { SafeAreaView } from 'react-native';
 
-
 type ReportsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reports'>;
 
 const wasteTypes = [
@@ -326,8 +325,8 @@ export default function ReportsScreen() {
           style={{ flex: 1 }}
         />
         <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-          <Image source={require('../../assets/images/button_adc_reciclo.png')} />
-        </TouchableOpacity>
+            <Text style={styles.closeButtonText}>Fechar</Text>
+          </TouchableOpacity>
       </Modal>
 
       <Modal visible={isPeriodModalVisible} animationType="slide" onRequestClose={() => setIsPeriodModalVisible(false)}>
@@ -487,6 +486,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     alignSelf: "center",
+    padding: 10,
+    backgroundColor: "#9B111E",
+    borderRadius: 5,
   },
   closeButtonText: {
     color: '#FFF',

@@ -38,9 +38,16 @@ export default function ReportDetailsScreen() {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleSave = async () => {
+    const weightNumber = Number(newWeight);
+  
+    if (!newWeight || isNaN(weightNumber) || weightNumber <= 0) {
+      Alert.alert("Erro", "O peso deve ser um número válido maior que zero.");
+      return;
+    }
+  
     try {
       const reportRef = doc(db, "reports", id);
-      await updateDoc(reportRef, { weight: Number(newWeight), wasteType: newType });
+      await updateDoc(reportRef, { weight: weightNumber, wasteType: newType });
       Alert.alert("Sucesso", "Relatório atualizado com sucesso!");
       setIsEditing(false);
       navigation.navigate("Reports", { refresh: true });
@@ -48,6 +55,7 @@ export default function ReportDetailsScreen() {
       Alert.alert("Erro", "Não foi possível atualizar o relatório.");
     }
   };
+  
 
   const handleDelete = async () => {
     Alert.alert("Excluir Relatório", "Tem certeza que deseja excluir este relatório?", [

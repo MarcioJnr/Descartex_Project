@@ -38,7 +38,6 @@ export default function LoginScreen() {
 
       navigation.replace("HomePage"); 
     } catch (error) {
-      console.error("Erro ao fazer login:", (error as any).message);
       Alert.alert("Erro","Erro ao fazer login: " + (error as any).message);
     }
   };
@@ -49,8 +48,7 @@ export default function LoginScreen() {
 
   function SignIn() {
     signInWithEmailAndPassword(auth, email, password)
-    .catch(error => alert(error.message));
-    //Lembrar de informar o erro ao usuário de forma mais amigável
+    .catch(error => Alert.alert(error.message));
   }
 
 
