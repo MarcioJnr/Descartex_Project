@@ -114,11 +114,15 @@ export default function CameraScreen({ route }: Props) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+
+    <View style={styles.headerContainer}>
+    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
       </TouchableOpacity>
       <Text style={styles.header}>Fotografe o resíduo</Text>
       <Text style={styles.subHeader}>Centralize o valor na moldura</Text>
+    
+    </View>
       <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
         <View style={styles.overlay}>
           <View style={styles.overlayTop} />
@@ -151,7 +155,20 @@ export default function CameraScreen({ route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F4EDE4",
+    backgroundColor: "#EBD0B5",
+  },
+  headerContainer:{
+    flex: 1,
+    width: "100%",
+    height: 170,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    backgroundColor: "#DCDEC4",
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
   },
   permissionContainer: {
     flex: 1,
@@ -166,18 +183,19 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 24,
     fontWeight: "bold",
-    marginTop: 20,
-    color: "#6B4226",
+    //marginTop: 20,
+    color: "#94451E",
   },
   subHeader: {
     textAlign: "center",
     fontSize: 16,
-    color: "#6B4226",
+    color: "#94451E",
     marginBottom: 20,
   },
   camera: {
-    height: 600,
+    height: 534,
     marginHorizontal: 40,
+    marginTop: 180,
     borderRadius: 10,
     overflow: "hidden",
   },

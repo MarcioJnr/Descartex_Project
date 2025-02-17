@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   headerContainer:{
     flex: 1,
-    width: "100%",
+    width: "111%",
     height: 208,
     position: "absolute",
     top: 0,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
   },
   scrollContainer: {
-    marginTop: 60,
+    marginTop: 80,
     alignItems: "center",
   },
 
