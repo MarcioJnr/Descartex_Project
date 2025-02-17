@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
-    width: "110%",
+    width: "100%",
     height: 208,
     position: "absolute",
     top: 0,
@@ -225,6 +225,11 @@ const styles = StyleSheet.create({
     width: 239,
     height: 29,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+    
   },
   filterButtonPeriod: {
     backgroundColor: "#F1EBDD",
@@ -235,6 +240,10 @@ const styles = StyleSheet.create({
     width: 104,
     height: 29,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   filterButtonText: {
     fontSize: 14,
