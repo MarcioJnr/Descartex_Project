@@ -112,6 +112,9 @@ export default function ReportsScreen() {
         });
       }
 
+      // Ordenar os relatórios pela data (mais recente primeiro)
+      reports.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
       setResidues(reports);
     } catch (error) {
       console.error("Erro ao buscar relatórios:", error);

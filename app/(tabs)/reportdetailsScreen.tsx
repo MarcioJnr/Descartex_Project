@@ -50,7 +50,7 @@ export default function ReportDetailsScreen() {
       await updateDoc(reportRef, { weight: weightNumber, wasteType: newType });
       Alert.alert("Sucesso", "Relatório atualizado com sucesso!");
       setIsEditing(false);
-      navigation.navigate("Reports", { refresh: true });
+      navigation.replace("Reports", { refresh: true });
     } catch (error) {
       Alert.alert("Erro", "Não foi possível atualizar o relatório.");
     }
@@ -66,7 +66,7 @@ export default function ReportDetailsScreen() {
           try {
             await deleteDoc(doc(db, "reports", id));
             Alert.alert("Sucesso", "Relatório excluído com sucesso!");
-            navigation.navigate("Reports", { refresh: true });
+            navigation.replace("Reports", { refresh: true });
           } catch (error) {
             Alert.alert("Erro", "Não foi possível excluir o relatório.");
           }
