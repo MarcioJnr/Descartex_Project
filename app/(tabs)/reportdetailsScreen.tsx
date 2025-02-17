@@ -6,6 +6,7 @@ import { RootStackParamList } from "../../types";
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../assets/firebaseConfig";
 import { Picker } from "@react-native-picker/picker";
+import { SafeAreaView } from 'react-native';
 
 type ReportDetailsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ReportDetails'>;
 
@@ -37,16 +38,24 @@ export default function ReportDetailsScreen() {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleSave = async () => {
+    const weightNumber = Number(newWeight);
+  
+    if (!newWeight || isNaN(weightNumber) || weightNumber <= 0) {
+      Alert.alert("Erro", "O peso deve ser um número válido maior que zero.");
+      return;
+    }
+  
     try {
       const reportRef = doc(db, "reports", id);
-      await updateDoc(reportRef, { weight: Number(newWeight), wasteType: newType });
+      await updateDoc(reportRef, { weight: weightNumber, wasteType: newType });
       Alert.alert("Sucesso", "Relatório atualizado com sucesso!");
       setIsEditing(false);
-      navigation.navigate("Reports", { refresh: true });
+      navigation.replace("Reports", { refresh: true });
     } catch (error) {
       Alert.alert("Erro", "Não foi possível atualizar o relatório.");
     }
   };
+  
 
   const handleDelete = async () => {
     Alert.alert("Excluir Relatório", "Tem certeza que deseja excluir este relatório?", [
@@ -57,7 +66,7 @@ export default function ReportDetailsScreen() {
           try {
             await deleteDoc(doc(db, "reports", id));
             Alert.alert("Sucesso", "Relatório excluído com sucesso!");
-            navigation.navigate("Reports", { refresh: true });
+            navigation.replace("Reports", { refresh: true });
           } catch (error) {
             Alert.alert("Erro", "Não foi possível excluir o relatório.");
           }
@@ -69,13 +78,17 @@ export default function ReportDetailsScreen() {
   const wasteType = wasteTypes.find(w => w.name === newType) || wasteTypes[0];
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
+
+      <View style={styles.containerDetails}>
       <TouchableOpacity onPress={() => navigation.navigate("Reports", { refresh: true })} style={styles.backButton}>
-        <Text style={styles.backText}>{"< Voltar"}</Text>
+        <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
       </TouchableOpacity>
 
+      <View style={styles.details}>
       <View style={styles.typeContainer}>
-        <Image source={wasteType.image} style={styles.icon} />
+      <Image source={wasteType.image} style={styles.icon} />
         {isEditing ? (
           <Picker
             selectedValue={newType}
@@ -92,24 +105,30 @@ export default function ReportDetailsScreen() {
           </View>
         )}
       </View>
-
       <Image source={{ uri: photoUrl }} style={styles.image} />
 
+      <View style={styles.containerText}>
       <Text style={styles.infoText}>Registrado em: {date}</Text>
       <Text style={styles.infoText}>Colaborador: {creatorName}</Text>
 
-      <Text style={styles.label}>Peso:</Text>
-      {isEditing ? (
-        <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={newWeight}
-        onChangeText={(text) => setNewWeight(text.replace(/[^0-9.]/g, ""))}
+      <View style={styles.containerInput}>
+        <Text style={styles.label}>Peso:</Text>
+        {isEditing ? (
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            value={newWeight}
+            onChangeText={(text) => setNewWeight(text.replace(/[^0-9.]/g, ""))}
+           maxLength={4}
         />      
       ) : (
         <Text style={styles.infoText}>{newWeight} kg</Text>
       )}
+      </View>
+      
+      </View>
 
+      <View style={styles.containerButton}>
       {!isEditing ? (
         <TouchableOpacity style={styles.editButton} onPress={() => setIsEditing(true)}>
           <Text style={styles.buttonText}>Editar</Text>
@@ -123,25 +142,132 @@ export default function ReportDetailsScreen() {
       <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
         <Text style={styles.buttonText}>Excluir</Text>
       </TouchableOpacity>
+      </View>
+      
+      </View>
+
+      </View>
+      
     </View>
+    </SafeAreaView>
+
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F5DC", padding: 20 },
-  backButton: { marginBottom: 20 },
-  backText: { fontSize: 18, color: "#94451E" },
-  typeContainer: { flexDirection: "row", alignItems: "center", marginBottom: 20 },
-  icon: { width: 40, height: 40, marginRight: 10 },
-  typeView: { flex: 1, padding: 5 },
-  title: { fontSize: 24, fontWeight: "bold" },
-  picker: { height: 50, flex: 1, backgroundColor: "#FFF", borderWidth: 1, borderColor: "#94451E", borderRadius: 5 },
-  image: { width: "100%", height: 250, borderRadius: 10, marginBottom: 20 },
-  infoText: { fontSize: 16, color: "#94451E", marginBottom: 10 },
-  label: { fontSize: 18, fontWeight: "bold", marginTop: 10, color: "#94451E", marginBottom: 5 },
-  input: { backgroundColor: "#FFF", padding: 10, borderRadius: 5, fontSize: 16, marginBottom: 10, borderWidth: 1, borderColor: "#94451E" },
-  editButton: { backgroundColor: "#4CAF50", padding: 15, borderRadius: 5, alignItems: "center", marginTop: 20 },
-  saveButton: { backgroundColor: "#4CAF50", padding: 15, borderRadius: 5, alignItems: "center", marginTop: 20 },
-  deleteButton: { backgroundColor: "#D9534F", padding: 15, borderRadius: 5, alignItems: "center", marginTop: 10 },
-  buttonText: { fontSize: 16, color: "#FFF" },
+  container: { 
+  flex: 1,
+  backgroundColor: "#DCDEC4",
+  //padding: 20,
+  },
+  containerDetails: {
+    backgroundColor: "#EBD0B5",
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: "#94451E",
+    marginTop: 30,
+    height: "100%",
+    padding: 20,
+  },
+  details:{
+    alignItems: "center",
+  },
+  backButton: {
+    marginBottom: 20, 
+  },
+  backText: { 
+    fontSize: 18, 
+    color: "#94451E" 
+  },
+  typeContainer: { 
+    flexDirection: "row", 
+    alignItems: "center", 
+    marginBottom: 20 
+  },
+  icon: { 
+    width: 40, 
+    height: 40, 
+    marginRight: 10, 
+  },
+  typeView: { 
+    padding: 5 
+  },
+  title: { 
+    fontSize: 24, 
+    fontWeight: "bold" 
+  },
+  picker: {
+    width: 150,
+     height: 60,  
+    },
+  image: { 
+    width: 277, 
+    height: 402, 
+    borderRadius: 10, 
+    marginBottom: 20 
+  },
+  containerText:{
+    flexDirection: "column",
+  },
+  infoText: { 
+    fontSize: 15, 
+    fontWeight: "500",
+    color: "#94451E", 
+    marginBottom: 10 
+  },
+  containerInput:{
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  label: {
+     fontSize: 15, 
+     fontWeight: "500",
+     width: 50, 
+     color: "#94451E", 
+     marginBottom: 10 
+    },
+  input: { 
+    alignItems: "center",
+    textDecorationLine: "underline",
+    fontSize: 14, 
+    //marginBottom: 10,
+    height: 35
+    //borderWidth: 1, 
+    //borderColor: "#94451E" 
+  },
+  containerButton: {
+    alignItems: "center",
+
+  },
+  editButton: { 
+    backgroundColor: "#497E13",
+    width: 223,
+    height: 29, 
+    padding: 3, 
+    borderRadius: 5, 
+    alignItems: "center", 
+    marginTop: 20 
+  },
+  saveButton: { 
+    backgroundColor: "#497E13", 
+    width: 223,
+    height: 29, 
+    padding: 3, 
+    borderRadius: 5, 
+    alignItems: "center", 
+    marginTop: 20 
+  },
+  deleteButton: { 
+    backgroundColor: "#94451E", 
+    width: 223,
+    height: 29, 
+    padding: 3, 
+    borderRadius: 5, 
+    alignItems: "center", 
+    marginTop: 10 
+  },
+  buttonText: { 
+    fontSize: 16, 
+    color: "#FFF" 
+  },
 });

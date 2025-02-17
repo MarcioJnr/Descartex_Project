@@ -5,6 +5,8 @@ import { RootStackParamList } from "../../types";
 import { auth, db, storage } from "../../assets/firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { SafeAreaView } from 'react-native';
+
 
 type Props = StackScreenProps<RootStackParamList, "NewReport">;
 
@@ -62,7 +64,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
 
       console.log("Relatório salvo no Firestore com sucesso!");
       Alert.alert("Sucesso", "Relatório salvo com sucesso!");
-      navigation.navigate("FeedbackScreen");
+      navigation.replace("FeedbackScreen");
     } catch (error) {
       console.error("Erro ao salvar relatório:", error);
       Alert.alert("Erro", "Ocorreu um erro ao salvar o relatório.");
@@ -70,6 +72,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       <Text style={styles.title}>Confirmar?</Text>
       <View style={styles.card}>
@@ -77,17 +80,31 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
         <View style={styles.wasteTypeContainer}>
           <Image source={selectedWasteType?.image} style={styles.wasteTypeImage} />
           <Text style={styles.wasteTypeText}>{wastetype}</Text>
+          { text !== "Nenhum número detectado." ? (
           <Text style={styles.weightText}>{text}g</Text>
+          ) : (
+          <Text style={styles.weightText}>{text}</Text>
+          )}
         </View>
         <Image source={{ uri: photo }} style={styles.image} />
       </View>
-      <TouchableOpacity style={styles.confirmButton} onPress={saveReportToFirebase}>
-        <Text style={styles.confirmButtonText}>Confirmar</Text>
-      </TouchableOpacity>
+      { text !== "Nenhum número detectado." ? (
+        <>
+          <TouchableOpacity style={styles.confirmButton} onPress={saveReportToFirebase}>
+            <Text style={styles.confirmButtonText}>Confirmar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.cancelButtonText}>Não, tirar outra foto</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.cancelButtonText}>Não, tirar outra foto</Text>
+        <Text style={styles.cancelButtonText}>Tirar outra foto</Text>
       </TouchableOpacity>
+      )}
     </View>
+    </SafeAreaView>
   );
 };
 
@@ -102,15 +119,18 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "#6D3B17",
+    color: "#94451E",
     marginBottom: 20,
   },
   card: {
-    backgroundColor: "#F7E5D1",
+    backgroundColor: "#EBD0B5",
+    borderWidth: 1,
+    borderColor: "#94451E",
     padding: 20,
     borderRadius: 15,
     alignItems: "center",
     width: "90%",
+    height: 612,
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
@@ -119,63 +139,71 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#B35A19",
+    color: "#94451E",
     marginBottom: 10,
   },
   wasteTypeContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    width: "80%",
+    width: 271,
+    height: 48,
     marginBottom: 15,
   },
   wasteTypeImage: {
-    width: 40,
-    height: 40,
+    width: 30,
+    height: 30,
   },
   wasteTypeText: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#007AFF",
-    marginRight: 10,
+    color: "#787878",
+    marginRight: 70,
   },
   weightText: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#333",
-    marginRight: 10,
+    color: "#787878",
+    //marginRight: 20,
   },
   image: {
-    width: 250,
-    height: 400,
-    borderRadius: 10,
+    width: 300,
+    height: 438,
+    //borderRadius: 10,
     marginBottom: 20,
   },
   confirmButton: {
-    backgroundColor: "#E5B288",
-    padding: 15,
+    backgroundColor: "#F1EBDD",
+    padding: 3,
+    borderWidth: 1,
+    borderColor: "#94451E",
     borderRadius: 10,
-    width: "80%",
+    width: 223,
+    height: 30,
     alignItems: "center",
     marginTop: 15,
   },
   confirmButtonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#6D3B17",
+    fontSize: 16,
+    textAlign: "center",
+    fontWeight: "700",
+    color: "#94451E",
   },
   cancelButton: {
-    backgroundColor: "#6D3B17",
-    padding: 15,
+    backgroundColor: "#94451E",
+    padding: 3,
     borderRadius: 10,
-    width: "80%",
+    width: 223,
+    height: 30,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 15,
   },
   cancelButtonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#F1EBDD",
   },
 });
 

@@ -16,6 +16,8 @@ import { auth, db } from "../../assets/firebaseConfig";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { RootStackParamList } from "../../types";
+import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -65,6 +67,8 @@ export default function SignUpScreen() {
   };
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
     <View style={styles.container}>
       <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
       <View style={styles.form}>
@@ -124,6 +128,7 @@ export default function SignUpScreen() {
         </TouchableOpacity>
       </View>
     </View>
+    </SafeAreaView>
   );
 }
     

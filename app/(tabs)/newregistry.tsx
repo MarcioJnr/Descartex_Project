@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "rea
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../../types";
+import { SafeAreaView } from 'react-native';
+
 
 type NewRegistryNavigationProp = StackNavigationProp<RootStackParamList, 'NewRegistry'>;
 
@@ -26,6 +28,7 @@ export default function NewRegistry() {
 
 
    return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
 
       <View style={styles.headerContainer}>
@@ -55,6 +58,7 @@ export default function NewRegistry() {
   </View>
 </ScrollView>
     </View>
+    </SafeAreaView>
   );
 }
 
@@ -67,7 +71,7 @@ const styles = StyleSheet.create({
   },
   headerContainer:{
     flex: 1,
-    width: "110%",
+    width: "111%",
     height: 208,
     position: "absolute",
     top: 0,
@@ -90,7 +94,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
   },
   scrollContainer: {
-    marginTop: 60,
+    marginTop: 80,
     alignItems: "center",
   },
 

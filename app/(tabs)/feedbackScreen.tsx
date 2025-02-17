@@ -3,54 +3,60 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-
-
-
+import { SafeAreaView } from 'react-native';
 
 const FeedbackScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.title}>Resíduo Registrado com Sucesso!</Text>
         
         <TouchableOpacity style={styles.button} onPress={() => navigation.replace('NewRegistry')}>
-          <Image source={require("./../../assets/images/icon_cam.png")} style={styles.icon} />
           <Text style={styles.buttonText}>Novo Registro</Text>
+          <Image source={require("./../../assets/images/icon_cam.png")} style={styles.icon} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.button} onPress={() => navigation.replace('HomePage')}>
-          <Image source={require("./../../assets/images/icon_home.png")} style={styles.icon} />
           <Text style={styles.buttonText}>Voltar para a página inicial</Text>
+          <Image source={require("./../../assets/images/icon_home.png")} style={styles.icon} />
         </TouchableOpacity>
       </View>
     </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#D9D9B2",
+    backgroundColor: "#DCDEC4",
     justifyContent: "center",
     alignItems: "center",
     
   },
   card: {
-    backgroundColor: "#E7C2A0",
+    backgroundColor: "#EBD0B5",
     padding: 20,
+    borderWidth: 1,
+    borderColor: "#94451E",
     borderRadius: 15,
     alignItems: "center",
-    width: "80%",
-    borderWidth: 2,
-    borderColor: "#2186C4",
+    width: 340,
+    height: 612,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3
   },
   title: {
-    fontSize: 18,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#723B19",
+    color: "#94451E",
     textAlign: "center",
-    marginBottom: 20,
+    marginTop: 40,
+    marginBottom: 80
   },
   button: {
     flexDirection: "column",
@@ -59,10 +65,15 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "#94451E",
     padding: 15,
+    margin: 10,
     borderRadius: 10,
-    width: 114,
-    height: 107,
+    width: 115,
+    height: 115,
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3
   },
   buttonText: {
     color: "#94451E",
