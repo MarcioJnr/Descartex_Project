@@ -14,15 +14,25 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../assets/firebaseConfig"; 
 import { RootStackParamList } from "../../types";
 
+const getErrorMessage = (errorCode: string) => {
+  switch (errorCode) {
+    case 'auth/invalid-email':
+      return 'O e-mail fornecido é inválido.';
+    case 'auth/user-not-found':
+      return 'Usuário não encontrado.';
+    case 'auth/invalid-credential':
+      return 'Senha incorreta.';
+    default:
+      return 'Ocorreu um erro ao fazer login. Tente novamente.';
+  }
+};
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-
   const handlePress = () => {
-    SignIn();
     handleLogin();
   };
 
@@ -34,11 +44,11 @@ export default function LoginScreen() {
   
     try {
       await signInWithEmailAndPassword(auth, email, password);
-
       navigation.replace("HomePage"); 
-    } catch (error) {
-      console.error("Erro ao fazer login:", (error as any).message);
-      Alert.alert("Erro","Erro ao fazer login: " + (error as any).message);
+    } catch (error: any) {
+      const errorMessage = getErrorMessage(error.code);
+      console.error("Erro ao fazer login:", error.message);
+      Alert.alert("Erro", errorMessage);
     }
   };
 
@@ -46,62 +56,52 @@ export default function LoginScreen() {
     navigation.navigate("SignUp");
   }
 
-  function SignIn() {
-    signInWithEmailAndPassword(auth, email, password)
-    .catch(error => alert(error.message));
-    //Lembrar de informar o erro ao usuário de forma mais amigável
-  }
-
-
   return (
     <View style={styles.container}>
       {/* Logo */}
-      
-        <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+      <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
 
-        {/* Login Form */}
-        <View style={styles.form}>
-          <Text style={styles.title}>Login</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="E-mail"
-            placeholderTextColor="#555"
-            value={email}
-            onChangeText={setEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            placeholderTextColor="#555"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
+      {/* Login Form */}
+      <View style={styles.form}>
+        <Text style={styles.title}>Login</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="E-mail"
+          placeholderTextColor="#555"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          placeholderTextColor="#555"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
 
-          <TouchableOpacity style={styles.loginButton} onPress={handlePress}>
-            <Text style={styles.loginButtonText}>Entrar</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.googleButton}>
-          <Image source={require('../../assets/images/icon_google.png')} style={styles.googleIcon} />
-            <Text style={styles.googleButtonText}>
-              Entrar com Google
-            </Text>
-          </TouchableOpacity>
-          
-        </View>
-
-        <TouchableOpacity>
-            <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
-          </TouchableOpacity>
-
-        <View style={styles.bottomLayout}>
-          {/* Criar Conta */}
-        <TouchableOpacity>
-          <Text style={styles.createAccount}  onPress={SignUp} >Criar conta</Text>
+        <TouchableOpacity style={styles.loginButton} onPress={handlePress}>
+          <Text style={styles.loginButtonText}>Entrar</Text>
         </TouchableOpacity>
-        </View>
 
+        <TouchableOpacity style={styles.googleButton}>
+          <Image source={require('../../assets/images/icon_google.png')} style={styles.googleIcon} />
+          <Text style={styles.googleButtonText}>
+            Entrar com Google
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity>
+        <Text style={styles.forgotPassword}>Esqueci minha senha</Text>
+      </TouchableOpacity>
+
+      <View style={styles.bottomLayout}>
+        {/* Criar Conta */}
+        <TouchableOpacity>
+          <Text style={styles.createAccount} onPress={SignUp}>Criar conta</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-
   bottomLayout: {
     flex: 1,
     backgroundColor: "#EBD0B5",
@@ -123,11 +122,9 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 50,
     marginTop: 80,
   },
-
   logo: {
     marginTop: 80,
   },
-
   form: {
     backgroundColor: "#97BC39",
     width: "75%",
@@ -136,14 +133,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 90
   },
-
   title: {
     fontSize: 24,
     fontWeight: "500",
     color: "#F1EBDD",
     marginBottom: 15,
   },
-
   input: {
     width: "75%",
     padding: 5,
@@ -151,7 +146,6 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     borderBottomWidth: 1,
   },
-
   loginButton: {
     backgroundColor: "#F1EBDD",
     borderWidth: 1,
@@ -205,6 +199,5 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 50,
     textAlign: "center",
-    //width: "100%",
   },
-})
+});
