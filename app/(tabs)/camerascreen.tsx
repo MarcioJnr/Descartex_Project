@@ -9,6 +9,7 @@ import { RootStackParamList } from "../../types";
 import { RouteProp } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 
 type CameraScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CameraScreen'>;
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'CameraScreen'>;
@@ -72,8 +73,8 @@ export default function CameraScreen({ route }: Props) {
   
       const optimizedImage = await ImageManipulator.manipulateAsync(
         photoUri,
-        [{ resize: { width: 1500 } }],
-        { compress: 0.9, format: ImageManipulator.SaveFormat.JPEG }
+        [{ resize: { width: 2000 } }],
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG }
       );
   
       const base64Image = await FileSystem.readAsStringAsync(optimizedImage.uri, {
@@ -99,11 +100,17 @@ export default function CameraScreen({ route }: Props) {
   
       const data = await response.json();
       const text = data.responses[0]?.fullTextAnnotation?.text || "";
+      console.log("Texto detectado:", text);
       
-      const numbers = text.match(/\d+/g);
+      // Filtra apenas os números que estão juntos e são válidos
+      const numbers = text.match(/\b\d{1,4}\b/g);
       if (!numbers || numbers.length === 0) return "Nenhum número detectado.";
   
-      return parseInt(numbers.join('').slice(0, 4), 10).toString();
+      // Pega o primeiro número válido encontrado
+      const validNumber = numbers[0];
+      
+      // Garante que o número tenha no máximo 4 dígitos
+      return validNumber.slice(0, 4);
     } catch (error) {
       Alert.alert("Erro ao realizar leitura:", String(error));
       return null;
@@ -112,7 +119,8 @@ export default function CameraScreen({ route }: Props) {
   
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
+      <StatusBar backgroundColor="#DCDEC4" translucent={false} barStyle="dark-content" />
     <View style={styles.container}>
 
     <View style={styles.headerContainer}>

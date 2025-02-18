@@ -14,6 +14,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../assets/firebaseConfig"; 
 import { RootStackParamList } from "../../types";
 import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 
 
 export default function LoginScreen() {
@@ -53,8 +54,9 @@ export default function LoginScreen() {
 
 
   return (
-  <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-    <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
+      <StatusBar backgroundColor="#DCDEC4" translucent={false} barStyle="dark-content" />
+      <View style={styles.container}>
       {/* Logo */}
       
         <Image source={require('../../assets/images/logo.png')} style={styles.logo} />

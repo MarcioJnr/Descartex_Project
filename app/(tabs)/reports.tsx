@@ -13,6 +13,7 @@ import * as MailComposer from 'expo-mail-composer';
 import { fetchUserData, UserData } from "../../assets/fetchUserData";
 import { Calendar } from 'react-native-calendars';
 import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 
 type ReportsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Reports'>;
 
@@ -251,8 +252,9 @@ export default function ReportsScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-    <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
+      <StatusBar backgroundColor="#EBD0B5" translucent={false} barStyle="dark-content" />
+      <View style={styles.container}>
       {loading && (
         <View style={styles.loadingOverlay}>
           <ActivityIndicator size="large" color="#497E13" />
