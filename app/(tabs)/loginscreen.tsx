@@ -23,7 +23,7 @@ const getErrorMessage = (errorCode: string) => {
     case 'auth/user-not-found':
       return 'Usuário não encontrado.';
     case 'auth/invalid-credential':
-      return 'Senha incorreta.';
+      return 'E-mail ou senha estão incorretos.';
     default:
       return 'Ocorreu um erro ao fazer login. Tente novamente.';
   }
@@ -47,15 +47,10 @@ export default function LoginScreen() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigation.replace("HomePage"); 
-<<<<<<< HEAD
     } catch (error: any) {
       const errorMessage = getErrorMessage(error.code);
-      console.error("Erro ao fazer login:", error.message);
+      //console.error("Erro ao fazer login:", error.message);
       Alert.alert("Erro", errorMessage);
-=======
-    } catch (error) {
-      Alert.alert("Erro","Erro ao fazer login: " + (error as any).message);
->>>>>>> master
     }
   };
 
@@ -63,15 +58,6 @@ export default function LoginScreen() {
     navigation.navigate("SignUp");
   }
 
-<<<<<<< HEAD
-=======
-  function SignIn() {
-    signInWithEmailAndPassword(auth, email, password)
-    .catch(error => Alert.alert(error.message));
-  }
-
-
->>>>>>> master
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
       <StatusBar backgroundColor="#DCDEC4" translucent={false} barStyle="dark-content" />
@@ -219,10 +205,5 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     padding: 10,
     textAlign: "center",
-<<<<<<< HEAD
-=======
-    marginTop: 45,
-    //width: "100%",
->>>>>>> master
   },
 });
