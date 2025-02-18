@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { Button, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Image } from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Image, Alert } from "react-native";
 import * as ImageManipulator from 'expo-image-manipulator';
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from 'expo-file-system';
@@ -8,6 +8,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../types"; 
 import { RouteProp } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 
 type CameraScreenNavigationProp = StackNavigationProp<RootStackParamList, 'CameraScreen'>;
 type CameraScreenRouteProp = RouteProp<RootStackParamList, 'CameraScreen'>;
@@ -56,10 +58,10 @@ export default function CameraScreen({ route }: Props) {
             date: currentDate.toISOString(),
           });
         } else {
-          console.error("Erro: Nenhum texto detectado.");
+          Alert.alert("Erro: Nenhum texto detectado.");
         }
       } else {
-        console.error("Erro: URI da foto não encontrado.");
+        Alert.alert("Erro: URI da foto não encontrado.");
       }
     }
   };
@@ -71,8 +73,8 @@ export default function CameraScreen({ route }: Props) {
   
       const optimizedImage = await ImageManipulator.manipulateAsync(
         photoUri,
-        [{ resize: { width: 1500 } }],
-        { compress: 0.9, format: ImageManipulator.SaveFormat.JPEG }
+        [{ resize: { width: 2000 } }],
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG }
       );
   
       const base64Image = await FileSystem.readAsStringAsync(optimizedImage.uri, {
@@ -98,25 +100,37 @@ export default function CameraScreen({ route }: Props) {
   
       const data = await response.json();
       const text = data.responses[0]?.fullTextAnnotation?.text || "";
+      console.log("Texto detectado:", text);
       
-      const numbers = text.match(/\d+/g);
+      // Filtra apenas os números que estão juntos e são válidos
+      const numbers = text.match(/\b\d{1,4}\b/g);
       if (!numbers || numbers.length === 0) return "Nenhum número detectado.";
   
-      return parseInt(numbers.join('').slice(0, 4), 10).toString();
+      // Pega o primeiro número válido encontrado
+      const validNumber = numbers[0];
+      
+      // Garante que o número tenha no máximo 4 dígitos
+      return validNumber.slice(0, 4);
     } catch (error) {
-      console.error("Erro ao realizar OCR:", error);
+      Alert.alert("Erro ao realizar leitura:", String(error));
       return null;
     }
   };
   
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
+      <StatusBar backgroundColor="#DCDEC4" translucent={false} barStyle="dark-content" />
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+
+    <View style={styles.headerContainer}>
+    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Image source={require('../../assets/images/icon_back.png')} style={styles.backButton} />
       </TouchableOpacity>
       <Text style={styles.header}>Fotografe o resíduo</Text>
       <Text style={styles.subHeader}>Centralize o valor na moldura</Text>
+    
+    </View>
       <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
         <View style={styles.overlay}>
           <View style={styles.overlayTop} />
@@ -142,13 +156,27 @@ export default function CameraScreen({ route }: Props) {
         </View>
       )}
     </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F4EDE4",
+    backgroundColor: "#EBD0B5",
+  },
+  headerContainer:{
+    flex: 1,
+    width: "100%",
+    height: 170,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    backgroundColor: "#DCDEC4",
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 50,
+    borderBottomRightRadius: 50,
   },
   permissionContainer: {
     flex: 1,
@@ -163,18 +191,19 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 24,
     fontWeight: "bold",
-    marginTop: 20,
-    color: "#6B4226",
+    //marginTop: 20,
+    color: "#94451E",
   },
   subHeader: {
     textAlign: "center",
     fontSize: 16,
-    color: "#6B4226",
+    color: "#94451E",
     marginBottom: 20,
   },
   camera: {
-    height: 600,
+    height: 534,
     marginHorizontal: 40,
+    marginTop: 180,
     borderRadius: 10,
     overflow: "hidden",
   },

@@ -13,6 +13,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../assets/firebaseConfig"; 
 import { RootStackParamList } from "../../types";
+import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 
 const getErrorMessage = (errorCode: string) => {
   switch (errorCode) {
@@ -45,10 +47,15 @@ export default function LoginScreen() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigation.replace("HomePage"); 
+<<<<<<< HEAD
     } catch (error: any) {
       const errorMessage = getErrorMessage(error.code);
       console.error("Erro ao fazer login:", error.message);
       Alert.alert("Erro", errorMessage);
+=======
+    } catch (error) {
+      Alert.alert("Erro","Erro ao fazer login: " + (error as any).message);
+>>>>>>> master
     }
   };
 
@@ -56,8 +63,19 @@ export default function LoginScreen() {
     navigation.navigate("SignUp");
   }
 
+<<<<<<< HEAD
+=======
+  function SignIn() {
+    signInWithEmailAndPassword(auth, email, password)
+    .catch(error => Alert.alert(error.message));
+  }
+
+
+>>>>>>> master
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
+      <StatusBar backgroundColor="#DCDEC4" translucent={false} barStyle="dark-content" />
+      <View style={styles.container}>
       {/* Logo */}
       <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
 
@@ -103,6 +121,8 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
     </View>
+  
+  </SafeAreaView>
   );
 }
 
@@ -114,13 +134,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   bottomLayout: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: "#EBD0B5",
     alignItems: "center",
     width: "100%",
+    height: 126,
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,
-    marginTop: 80,
+    marginTop: "auto",
   },
   logo: {
     marginTop: 80,
@@ -194,10 +215,14 @@ const styles = StyleSheet.create({
   createAccount: {
     color: "#94451E",
     width: "100%",
-    marginTop: 25,
+    marginBottom: 2,
     textDecorationLine: "underline",
     padding: 10,
-    borderRadius: 50,
     textAlign: "center",
+<<<<<<< HEAD
+=======
+    marginTop: 45,
+    //width: "100%",
+>>>>>>> master
   },
 });

@@ -8,6 +8,8 @@ import { fetchUserReports } from "../../assets/fetchUserReports";
 import { auth, signOut } from "../../assets/firebaseConfig"; // Importe signOut
 import { PieChart } from 'react-native-chart-kit';
 import { LineChart } from 'react-native-chart-kit';
+import { SafeAreaView } from 'react-native';
+import { StatusBar } from 'react-native';
 
 type HomePageNavigationProp = StackNavigationProp<RootStackParamList, 'HomePage'>;
 
@@ -60,7 +62,7 @@ export default function HomePage() {
     return (
       <LineChart
         data={chartData}
-        width={360}
+        width={340}
         height={200}
         chartConfig={{
           backgroundColor: "#ffffff",
@@ -188,7 +190,9 @@ export default function HomePage() {
   }
 
   return (
-  <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#DCDEC4' }}>
+      <StatusBar backgroundColor="#DCDEC4" translucent={false} barStyle="dark-content" />
+    <View style={styles.container}>
     <View style={styles.headerContainer}>
       <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
@@ -260,6 +264,7 @@ export default function HomePage() {
       </View>
     </View>
   </View>
+  </SafeAreaView>
 );
 }
 
