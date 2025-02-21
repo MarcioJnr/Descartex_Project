@@ -73,8 +73,8 @@ export default function CameraScreen({ route }: Props) {
   
       const optimizedImage = await ImageManipulator.manipulateAsync(
         photoUri,
-        [{ resize: { width: 2000 } }],
-        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG }
+        [{ resize: { width: 1500 } }],
+        { compress: 0.9, format: ImageManipulator.SaveFormat.JPEG }
       );
   
       const base64Image = await FileSystem.readAsStringAsync(optimizedImage.uri, {
@@ -102,15 +102,12 @@ export default function CameraScreen({ route }: Props) {
       const text = data.responses[0]?.fullTextAnnotation?.text || "";
       console.log("Texto detectado:", text);
       
-      // Filtra apenas os números que estão juntos e são válidos
-      const numbers = text.match(/\b\d{1,4}\b/g);
+      const numbers = text.match(/\d+/g);
+
       if (!numbers || numbers.length === 0) return "Nenhum número detectado.";
-  
-      // Pega o primeiro número válido encontrado
-      const validNumber = numbers[0];
       
-      // Garante que o número tenha no máximo 4 dígitos
-      return validNumber.slice(0, 4);
+      return parseInt(numbers.join('').slice(0, 4), 10).toString();
+
     } catch (error) {
       Alert.alert("Erro ao realizar leitura:", String(error));
       return null;
