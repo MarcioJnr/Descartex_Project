@@ -414,6 +414,10 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "48%", // Ajuste para caber dois botões na mesma linha
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   filterButtonText: {
     fontSize: 14,

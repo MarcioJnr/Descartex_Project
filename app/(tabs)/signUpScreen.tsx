@@ -21,6 +21,24 @@ import { StatusBar } from 'react-native';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
+const isValidCPF = (cpf: string) => {
+  return cpf.length === 11;
+};
+
+const isValidEmail = (email: string) => {
+  const re = /\S+@\S+\.\S+/;
+  return re.test(email);
+};
+
+const isValidPhone = (phone: string) => {
+  const re = /^\d{10,11}$/;
+  return re.test(phone);
+};
+
+const isValidPassword = (password: string) => {
+  return password.length >= 6; // Exemplo: senha deve ter pelo menos 6 caracteres
+};
+
 export default function SignUpScreen() {
   const [name, setName] = useState("");
   const [CPF, setCPF] = useState("");
@@ -33,6 +51,26 @@ export default function SignUpScreen() {
   const SignUp = async () => {
     if (!name || !CPF || !email || !phone || !funct || !password) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      return;
+    }
+
+    if (!isValidCPF(CPF)) {
+      Alert.alert('Erro', 'CPF deve ter 11 dígitos.');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      Alert.alert('Erro', 'E-mail inválido.');
+      return;
+    }
+
+    if (!isValidPhone(phone)) {
+      Alert.alert('Erro', 'Telefone inválido.');
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      Alert.alert('Erro', 'A senha deve ter pelo menos 6 caracteres.');
       return;
     }
 
@@ -85,7 +123,8 @@ export default function SignUpScreen() {
           placeholder="Cpf"
           placeholderTextColor="#555"
           value={CPF}
-          onChangeText={setCPF}
+          onChangeText={(text) => setCPF(text.replace(/[^0-9]/g, ''))} // Permitir apenas números
+          maxLength={11} // Limitar a 11 dígitos
         />
         <TextInput
           style={styles.input}
@@ -99,7 +138,8 @@ export default function SignUpScreen() {
           placeholder="Telefone"
           placeholderTextColor="#555"
           value={phone}
-          onChangeText={setPhone}
+          onChangeText={(text) => setPhone(text.replace(/[^0-9]/g, ''))} 
+          maxLength={11} 
         />
         <View style={styles.pickerContainer}>
           <Text style={styles.pickerLabel}>Função Principal na Empresa</Text>
@@ -132,85 +172,84 @@ export default function SignUpScreen() {
   );
 }
     
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        backgroundColor: "#DCDEC4",
-        justifyContent: "center",
-        alignItems: "center",
-      },
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#DCDEC4",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
-      logo: {
-        marginTop: -50,
-        marginBottom: 70,
-      },
-    
-      form: {
-        backgroundColor: "#EBD0B5",
-        width: "75%",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#94451E",
-        padding: 20,
-        alignItems: "center",
-        marginTop: 0
-      },
-    
-      title: {
-        fontSize: 24,
-        fontWeight: "bold",
-        color: "#94451E",
-        marginBottom: 15,
-        marginVertical: 30,
+  logo: {
+    marginTop: -50,
+    marginBottom: 70,
+  },
 
-      },
-    
-      input: {
-        width: "75%",
-        fontSize: 14,
-        padding: 5,
-        marginVertical: 5,
-        borderColor: "#000",
-        borderBottomWidth: 1,
-      },
-    
-      SignUpButton: {
-        backgroundColor: "#F1EBDD",
-        borderWidth: 1,
-        borderColor: "#94451E",
-        borderRadius: 5,
-        width: "75%",
-        padding: 5,
-        alignItems: "center",
-        marginTop: 70,
-      },
-      loginButtonText: {
-        color: "#94451E",
-        fontWeight: "bold",
-      },
+  form: {
+    backgroundColor: "#EBD0B5",
+    width: "75%",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#94451E",
+    padding: 20,
+    alignItems: "center",
+    marginTop: 0
+  },
 
-      SignInButton: {
-        color: "#94451E",
-        fontSize: 10.8,
-        //marginTop: 10,
-        marginBottom: 50,
-        textDecorationLine: "underline",
-      },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#94451E",
+    marginBottom: 15,
+    marginVertical: 30,
 
-      pickerContainer: {
-        width: "75%",
-        marginVertical: 15,
-      },
-      pickerLabel: {
-        width: "100%",
-        fontSize: 14,
-        color: "#555",
-        marginBottom: 5,
-      },
-      picker: {
-        width: "100%",
-        borderColor: "#000",
-        borderBottomWidth: 1,
-      },
-      
-    })
+  },
+
+  input: {
+    width: "75%",
+    fontSize: 14,
+    padding: 5,
+    marginVertical: 5,
+    borderColor: "#000",
+    borderBottomWidth: 1,
+  },
+
+  SignUpButton: {
+    backgroundColor: "#F1EBDD",
+    borderWidth: 1,
+    borderColor: "#94451E",
+    borderRadius: 5,
+    width: "75%",
+    padding: 5,
+    alignItems: "center",
+    marginTop: 70,
+  },
+  loginButtonText: {
+    color: "#94451E",
+    fontWeight: "bold",
+  },
+
+  SignInButton: {
+    color: "#94451E",
+    fontSize: 10.8,
+    //marginTop: 10,
+    marginBottom: 50,
+    textDecorationLine: "underline",
+  },
+
+  pickerContainer: {
+    width: "75%",
+    marginVertical: 15,
+  },
+  pickerLabel: {
+    width: "100%",
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  picker: {
+    width: "100%",
+    borderColor: "#000",
+    borderBottomWidth: 1,
+  },
+  
+});
