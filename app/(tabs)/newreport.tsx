@@ -84,7 +84,7 @@ const NewReportScreen: React.FC<Props> = ({ route, navigation }) => {
           { text !== "Nenhum número detectado." ? (
           <Text style={styles.weightText}>{text}g</Text>
           ) : (
-          <Text style={styles.weightText}>{text}</Text>
+          <Text style={styles.noNumberText}>{text}</Text>
           )}
         </View>
         <Image source={{ uri: photo }} style={styles.image} />
@@ -168,6 +168,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#787878",
     //marginRight: 20,
+  },
+  noNumberText: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "red",
+    maxWidth: 130,
+    wordWrap: "break-word",
   },
   image: {
     width: 300,
